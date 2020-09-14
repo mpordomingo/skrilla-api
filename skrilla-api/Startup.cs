@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using skrilla_api.Configuration;
+using skrilla_api.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace skrilla_api
 {
@@ -25,6 +29,12 @@ namespace skrilla_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<MysqlContext>(options => options
+                .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<MysqlContext>()
+                .AddDefaultTokenProviders();
             services.AddControllers();
         }
 
@@ -39,6 +49,8 @@ namespace skrilla_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
