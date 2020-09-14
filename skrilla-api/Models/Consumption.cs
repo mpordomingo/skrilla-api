@@ -1,12 +1,18 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace skrilla_api.Models
 {
     public class Consumption
     {
-        public string Title { get; set; }
-        public double Amount { get; set; }
+        [Key]
         public int Id { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
+        public string Title { get; set; }
+        [Required]
+        public double Amount { get; set; }
+        
 
         public Consumption(string title, double amount)
         {

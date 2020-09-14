@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using skrilla_api.Models;
- 
+
+
 namespace skrilla_api.Configuration
 {
     public class MysqlContext : IdentityDbContext<ApplicationUser>
