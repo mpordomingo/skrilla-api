@@ -8,8 +8,9 @@ namespace skrilla_api.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [Required]
         public string Title { get; set; }
+
         [Required]
         public double Amount { get; set; }
         

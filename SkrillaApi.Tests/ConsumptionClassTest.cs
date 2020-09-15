@@ -52,10 +52,13 @@ namespace SkrillaApi.Tests
         }
 
         [Fact]
-        public void ConsumptionInstanceCreationFailsDueToEmptyAmount()
+        public void ConsumptionInstanceCreationFailsDueToNullTitle()
         {
-            Consumption invalidConsumption = new Consumption("", 50.5);
-            Assert.Throws<InvalidOperationException>(()=> context.Add(invalidConsumption));
+            Consumption invalidConsumption = new Consumption(null, 10.23);
+            Assert.Throws<DbUpdateException>(()=> {
+                context.Add(invalidConsumption);
+                context.SaveChanges();
+             });
         }
 
         [Fact]
