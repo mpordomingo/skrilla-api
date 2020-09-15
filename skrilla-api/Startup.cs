@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using skrilla_api.Configuration;
 using skrilla_api.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace skrilla_api
 {
@@ -36,6 +37,22 @@ namespace skrilla_api
                 .AddEntityFrameworkStores<MysqlContext>()
                 .AddDefaultTokenProviders();
             services.AddControllers();
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+                options.DefaultForbidScheme = "Identity.Application";
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "http://localhost:6001";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

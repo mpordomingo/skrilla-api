@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using skrilla_api.Configuration;
@@ -12,6 +13,7 @@ namespace skrilla_api.Controllers
 
     [ApiController]
     [Route("/consumptions")]
+    [Authorize]
     public class ConsumptionsController : ControllerBase
     {
 
