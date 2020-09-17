@@ -15,11 +15,14 @@ using skrilla_api.Configuration;
 using skrilla_api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using IdentityServer4.Services;
 
 namespace skrilla_api
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,6 +33,15 @@ namespace skrilla_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyHeader();
+                    });
+            });
+
             services.AddDbContext<MysqlContext>(options => options
                 .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
 
@@ -53,6 +65,7 @@ namespace skrilla_api
                 };
             });
 
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +79,8 @@ namespace skrilla_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 

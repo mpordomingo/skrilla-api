@@ -13,7 +13,9 @@ namespace skrilla_api.Models
 
         [Required]
         public double Amount { get; set; }
-        
+
+        [Required]
+        public int PersonId { get; set; }
 
         public Consumption(string title, double amount)
         {
