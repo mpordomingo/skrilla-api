@@ -15,6 +15,8 @@
     <PackageReference Include="MySql.Data.Entity" Version="6.10.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
     <PackageReference Include="IdentityServer4" Version="4.1.0" />
+    <PackageReference Include="Microsoft.OData.Edm" Version="7.7.1" />
+    <PackageReference Include="NodaTime" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

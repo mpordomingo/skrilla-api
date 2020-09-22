@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace skrilla_api.Models
 {
@@ -17,10 +19,21 @@ namespace skrilla_api.Models
         [Required]
         public int PersonId { get; set; }
 
-        public Consumption(string title, double amount)
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        [Column("cdate", TypeName = "date")]
+        public LocalDate Date { get; set; }
+
+        public Consumption(string title, double amount, string category, int personId, LocalDate date)
         {
             this.Title = title;
             this.Amount = amount;
+            this.Category = category;
+            this.PersonId = personId;
+            this.Date = date;
+
         }
     }
 }

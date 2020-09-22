@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using skrilla_api.Models;
-
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NodaTime;
 
 namespace skrilla_api.Configuration
 {
@@ -16,6 +17,13 @@ namespace skrilla_api.Configuration
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            var dateConverter = new ValueConverter<LocalDate, DateTime>
+                (l => l.ToDateTimeUnspecified(), d => LocalDate.FromDateTime(d));
+
+            builder.Entity<Consumption>()
+                .Property(p => p.Date)
+                .HasConversion(dateConverter)
+                .HasColumnType("date");
             base.OnModelCreating(builder);
         }
 

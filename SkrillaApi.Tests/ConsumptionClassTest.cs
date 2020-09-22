@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Data.Sqlite;
 using SkrillaApi.Tests.Configuration;
+using NodaTime;
 
 namespace SkrillaApi.Tests
 {
@@ -41,7 +42,7 @@ namespace SkrillaApi.Tests
         [Fact]
         public void ConsumptionInstanceCreatedSuccessfully()
         {
-            Consumption aConsumption = new Consumption("Example",50.5);
+            Consumption aConsumption = new Consumption("Example",50.5, "Otros", 1, new LocalDate(2020,05,21));
             context.Consumptions.Add(aConsumption);
             context.SaveChanges();
 
@@ -54,12 +55,27 @@ namespace SkrillaApi.Tests
         [Fact]
         public void ConsumptionInstanceCreationFailsDueToNullTitle()
         {
-            Consumption invalidConsumption = new Consumption(null, 10.23);
+            Consumption invalidConsumption = new Consumption(null, 10.23,
+                "Otros", 1, new LocalDate(2020, 05, 21));
             Assert.Throws<DbUpdateException>(()=> {
                 context.Add(invalidConsumption);
                 context.SaveChanges();
              });
         }
+
+
+        [Fact]
+        public void ConsumptionInstanceCreationFailsDueToNullCategory()
+        {
+            Consumption invalidConsumption = new Consumption("Example",
+                10.23, null, 1, new LocalDate(2020, 05, 21));
+            Assert.Throws<DbUpdateException>(() => {
+                context.Add(invalidConsumption);
+                context.SaveChanges();
+            });
+        }
+
+        
 
         [Fact]
         public void Dispose() => _connection.Dispose();
