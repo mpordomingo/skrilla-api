@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 using skrilla_api.Configuration;
 using skrilla_api.Models;
+using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
-{ 
+{
 
     [ApiController]
     [Route("/consumptions")]
@@ -32,6 +34,35 @@ namespace skrilla_api.Controllers
         {
 
             return context.Consumptions.ToList();
+
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Consumption> Post(ConsumptionRequest request)
+        {
+            ConsumptionValidation validation = new ConsumptionValidation();
+            ValidationResult result = validation.ValidateConsumptionRequest(request);
+
+            if (result.Passed())
+            {
+                Consumption consumption = new Consumption(request.Title,
+                    request.Amount,
+                    request.Category,
+                    1,
+                    LocalDate.FromDateTime(request.Date));
+
+                context.Add(consumption);
+                context.SaveChanges();
+
+                return CreatedAtAction(nameof(Get), null, consumption);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+            
 
         }
     }

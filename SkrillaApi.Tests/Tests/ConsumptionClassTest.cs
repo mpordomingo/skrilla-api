@@ -1,5 +1,4 @@
-using System;
-using skrilla_api.Configuration;
+
 using skrilla_api.Models;
 using Xunit;
 
