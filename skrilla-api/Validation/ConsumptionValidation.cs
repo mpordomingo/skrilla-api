@@ -12,8 +12,8 @@ namespace skrilla_api.Validation
         {
             RuleFor(c => c.Title)
                 .Cascade(CascadeMode.Stop)
-                .NotNull().WithMessage("El titulo no puede estar vacio o ser nulo.")
-                .NotEmpty().WithMessage("El titulo no puede estar vacio o ser nulo.")
+                .NotNull().WithMessage("El titulo no puede ser nulo.")
+                .NotEmpty().WithMessage("El titulo no puede estar vacio.")
                 .DependentRules(() =>
                     {
                         RuleFor(c => c.Title).Must(title => title.Length < 200)
@@ -22,8 +22,8 @@ namespace skrilla_api.Validation
                 
 
             RuleFor(c => c.Category).Cascade(CascadeMode.Stop)
-                .NotNull().WithMessage("La categoria no puede estar vacia o ser nula.")
-                .NotEmpty().WithMessage("La categoria no puede estar vacia o ser nula.")
+                .NotNull().WithMessage("La categoria no puede ser nula.")
+                .NotEmpty().WithMessage("La categoria no puede estar vacia.")
                 .DependentRules(() =>
                 {
                     RuleFor(c => c.Category).Must(category => category.Length < 100).Unless(c => c.Category == null)
