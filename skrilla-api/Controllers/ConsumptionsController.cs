@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,15 @@ namespace skrilla_api.Controllers
 
         private readonly MysqlContext context;
 
+        private readonly ConsumptionValidation validator;
+
         private readonly ILogger<ConsumptionsController> _logger;
 
         public ConsumptionsController(ILogger<ConsumptionsController> logger, MysqlContext context)
         {
             _logger = logger;
             this.context = context;
+            validator = new ConsumptionValidation();
         }
 
         [HttpGet]
@@ -42,10 +46,9 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Consumption> Post(ConsumptionRequest request)
         {
-            ConsumptionValidation validation = new ConsumptionValidation();
-            ValidationResult result = validation.ValidateConsumptionRequest(request);
+            ValidationResult result = validator.Validate(request);
 
-            if (result.Passed())
+            if (result.IsValid)
             {
                 Consumption consumption = new Consumption(request.Title,
                     request.Amount,
@@ -60,10 +63,9 @@ namespace skrilla_api.Controllers
             }
             else
             {
-                return BadRequest(result);
+                return BadRequest(new ValidationSummary(result));
             }
             
-
         }
     }
 }
