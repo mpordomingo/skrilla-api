@@ -18,6 +18,11 @@
     <PackageReference Include="Microsoft.OData.Edm" Version="7.7.1" />
     <PackageReference Include="NodaTime" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="9.2.2" />
+    <PackageReference Include="coveralls.io" Version="1.4.2" />
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
