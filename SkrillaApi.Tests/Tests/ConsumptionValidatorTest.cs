@@ -49,7 +49,7 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.False(result.IsValid);
             Assert.Single(result.Errors);
-            Assert.Contains("El titulo no puede estar vacio o ser nulo.", summary.Messages);
+            Assert.Contains("El titulo no puede estar vacio.", summary.Messages);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.False(result.IsValid);
             Assert.Single(result.Errors);
-            Assert.Contains("El titulo no puede estar vacio o ser nulo.", summary.Messages);
+            Assert.Contains("El titulo no puede ser nulo.", summary.Messages);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.False(result.IsValid);
             Assert.Single(result.Errors);
-            Assert.Contains("La categoria no puede estar vacia o ser nula.", summary.Messages);
+            Assert.Contains("La categoria no puede ser nula.", summary.Messages);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.False(result.IsValid);
             Assert.Single(result.Errors);
-            Assert.Contains("La categoria no puede estar vacia o ser nula.", summary.Messages);
+            Assert.Contains("La categoria no puede estar vacia.", summary.Messages);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace SkrillaApi.Tests.Tests
             Assert.False(result.IsValid);
             Assert.Contains("El titulo no debe superar los 200 caracteres.", summary.Messages);
             Assert.Contains("El monto debe ser un numero positivo.", summary.Messages);
-            Assert.Contains("La categoria no puede estar vacia o ser nula.", summary.Messages);
+            Assert.Contains("La categoria no puede estar vacia.", summary.Messages);
         }
     }
 }

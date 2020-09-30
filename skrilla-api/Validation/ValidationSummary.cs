@@ -9,6 +9,11 @@ namespace skrilla_api.Validation
         public string Result  { get; set; }
         public List<string> Messages  { get; set; }
 
+        public ValidationSummary()
+        {
+
+        }
+
          public ValidationSummary(ValidationResult result)
         {
             Result = (result.IsValid) ? "passed" : "error";

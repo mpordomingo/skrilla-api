@@ -46,6 +46,7 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Consumption> Post(ConsumptionRequest request)
         {
+            
             ValidationResult result = validator.Validate(request);
 
             if (result.IsValid)
