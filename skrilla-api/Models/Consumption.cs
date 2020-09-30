@@ -23,13 +23,13 @@ namespace skrilla_api.Models
         public int PersonId { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public int Category { get; set; }
 
         [Required]
         [Column("cdate", TypeName = "date")]
         public LocalDate Date { get; set; }
 
-        public Consumption(string title, double amount, string category, int personId, LocalDate date)
+        public Consumption(string title, double amount, int category, int personId, LocalDate date)
         {
             this.Title = title;
             this.Amount = amount;

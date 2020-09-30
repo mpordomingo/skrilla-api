@@ -19,18 +19,6 @@ namespace skrilla_api.Validation
                         RuleFor(c => c.Title).Must(title => title.Length < 200)
                            .WithMessage("El titulo no debe superar los 200 caracteres.");
                     });
-                
-
-            RuleFor(c => c.Category).Cascade(CascadeMode.Stop)
-                .NotNull().WithMessage("La categoria no puede ser nula.")
-                .NotEmpty().WithMessage("La categoria no puede estar vacia.")
-                .DependentRules(() =>
-                {
-                    RuleFor(c => c.Category).Must(category => category.Length < 100).Unless(c => c.Category == null)
-                    .WithMessage("La categoria no debe superar los 100 caracteres.");
-
-                });
-
      
             RuleFor(c => c.Amount).Must(amount => amount > 0)
                 .WithMessage("El monto debe ser un numero positivo.");

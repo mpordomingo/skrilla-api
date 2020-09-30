@@ -34,10 +34,15 @@ namespace skrilla_api.Controllers
         }
 
         [HttpGet]
-        public List<Consumption>  Get()
+        public List<Consumption>Get(int? category)
         {
-
-            return context.Consumptions.ToList();
+            if (category.HasValue)
+                return context.Consumptions.ToList().FindAll(delegate (Consumption item)
+                {
+                    return item.Category == category;
+                });
+            else
+                return context.Consumptions.ToList();
 
         }
 
