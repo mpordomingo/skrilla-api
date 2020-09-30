@@ -24,9 +24,13 @@ namespace skrilla_api.Configuration
                 .Property(p => p.Date)
                 .HasConversion(dateConverter)
                 .HasColumnType("date");
+
+            builder.Entity<Category>();
+
             base.OnModelCreating(builder);
         }
 
         public virtual DbSet<Consumption> Consumptions { get; set;  }
+        public virtual DbSet<Category> Categories { get; set; }
     }
 }

@@ -45,6 +45,7 @@ namespace skrilla_api
             services.AddDbContext<MysqlContext>(options => options
                 .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
 
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<MysqlContext>()
                 .AddDefaultTokenProviders();
@@ -57,7 +58,7 @@ namespace skrilla_api
             })
             .AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "http://localhost:6001";
+                options.Authority = "https://localhost:6001";
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -82,9 +83,11 @@ namespace skrilla_api
 
             app.UseCors();
 
+
             app.UseAuthentication();
 
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
