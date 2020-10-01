@@ -55,7 +55,7 @@ namespace skrilla_api.Controllers
                 List<Consumption> result = new List<Consumption>();
                 result = context
                     .Consumptions
-                    .Where(s => s.Category.Name == category && s.PersonId.Equals(loggedUser))
+                    .Where(s => s.Category.Name.Contains(category) && s.PersonId.Equals(loggedUser))
                     .Include(c => c.Category).ToList();
 
                 return result;
