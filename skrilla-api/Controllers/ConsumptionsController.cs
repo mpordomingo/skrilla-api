@@ -42,7 +42,7 @@ namespace skrilla_api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<List<Consumption>> Get(string category)
+        public ActionResult<List<Consumption>> Get(string? category)
         {
             string loggedUser = User.FindFirstValue("userId");
             if(loggedUser == null)
@@ -53,11 +53,10 @@ namespace skrilla_api.Controllers
 
             if (category != null) {
                 List<Consumption> result = new List<Consumption>();
-                result.Add(context
+                result = context
                     .Consumptions
                     .Where(s => s.Category.Name == category && s.PersonId.Equals(loggedUser))
-                    .Include(c => c.Category)
-                    .FirstOrDefault<Consumption>());
+                    .Include(c => c.Category).ToList();
 
                 return result;
             }
