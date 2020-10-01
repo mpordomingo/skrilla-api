@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace skrilla_api.Models
 {
+    [Serializable]
     public class Category
     {
         [Key]

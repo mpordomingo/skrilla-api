@@ -5,6 +5,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using skrilla_api.Configuration;
@@ -46,7 +47,7 @@ namespace skrilla_api.Controllers
                 return result;
             }
             else {
-                return context.Consumptions.ToList();
+                return context.Consumptions.Include(c => c.Category).ToList();
             }
         }
 
