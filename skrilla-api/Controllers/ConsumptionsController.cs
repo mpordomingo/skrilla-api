@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,35 +29,57 @@ namespace skrilla_api.Controllers
 
         private readonly ILogger<ConsumptionsController> _logger;
 
-        public ConsumptionsController(ILogger<ConsumptionsController> logger, MysqlContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+
+        public ConsumptionsController(ILogger<ConsumptionsController> logger, MysqlContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             this.context = context;
             validator = new ConsumptionValidation();
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public List<Consumption> Get(string category)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<List<Consumption>> Get(string category)
         {
+            string loggedUser = User.FindFirstValue("userId");
+            if(loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+
             if (category != null) {
                 List<Consumption> result = new List<Consumption>();
                 result.Add(context
                     .Consumptions
-                    .Where(s => s.Category.Name == category)
+                    .Where(s => s.Category.Name == category && s.PersonId.Equals(loggedUser))
                     .FirstOrDefault<Consumption>());
 
                 return result;
             }
             else {
-                return context.Consumptions.Include(c => c.Category).ToList();
+                return context.Consumptions
+                    .Where(s => s.PersonId.Equals(loggedUser))
+                    .Include(c => c.Category)
+                    .ToList();
             }
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<Consumption> Post(ConsumptionRequest request)
         {
+            string loggedUser = User.FindFirstValue("userId");
+
+            if(loggedUser == null)
+            {
+                return Unauthorized();
+            }
 
             ValidationResult result = validator.Validate(request);
 
@@ -66,7 +90,7 @@ namespace skrilla_api.Controllers
                 Consumption consumption = new Consumption(request.Title,
                     request.Amount,
                     category,
-                    1,
+                    loggedUser,
                     LocalDate.FromDateTime(request.Date));
 
                 context.Add(consumption);

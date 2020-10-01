@@ -20,7 +20,7 @@ namespace skrilla_api.Models
         public double Amount { get; set; }
 
         [Required]
-        public int PersonId { get; set; }
+        public string PersonId { get; set; }
 
         [Required]
         public Category Category { get; set; }
@@ -29,7 +29,7 @@ namespace skrilla_api.Models
         [Column("cdate", TypeName = "date")]
         public LocalDate Date { get; set; }
 
-        public Consumption(string title, double amount, Category category, int personId, LocalDate date)
+        public Consumption(string title, double amount, Category category, string personId, LocalDate date)
         {
             this.Title = title;
             this.Amount = amount;
