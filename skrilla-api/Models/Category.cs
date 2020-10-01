@@ -2,7 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using NodaTime;
+
+
 namespace skrilla_api.Models
 {
     public class Category
@@ -10,22 +11,22 @@ namespace skrilla_api.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         [Required]
-        public int Photoid { get; set; }
+        public bool Nonedit { get; set; }
 
-        [Required]
-        public int Nonedit { get; set; }
-
-        public Category(string name, int photoid, int nonedit)
+        public Category(string name,  bool nonedit)
         {
             this.Name = name;
-            this.Photoid = photoid;
             this.Nonedit = nonedit;
+        }
+
+        public Category()
+        {
         }
     }
 }

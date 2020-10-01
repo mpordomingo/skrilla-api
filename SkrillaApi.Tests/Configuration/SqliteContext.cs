@@ -9,6 +9,8 @@ namespace SkrillaApi.Tests.Configuration
     public class SqliteContext : DbContext
     {
         public DbSet<Consumption> Consumptions { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
         public SqliteContext()
         {
 
@@ -23,11 +25,16 @@ namespace SkrillaApi.Tests.Configuration
             var dateConverter = new ValueConverter<LocalDate, DateTime>
                 (l => l.ToDateTimeUnspecified(), d => LocalDate.FromDateTime(d));
 
+            builder.Entity<Category>();
+
             builder.Entity<Consumption>()
                 .Property(p => p.Date)
                 .HasConversion(dateConverter)
                 .HasColumnType("date");
+            
+            builder.Entity<Consumption>().HasOne(s => s.Category);
             base.OnModelCreating(builder);
         }
+        
     }
 }

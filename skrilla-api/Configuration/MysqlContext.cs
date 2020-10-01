@@ -26,6 +26,7 @@ namespace skrilla_api.Configuration
                 .HasColumnType("date");
 
             builder.Entity<Category>();
+            builder.Entity<Consumption>().HasOne<Category>(s => s.Category);
 
             base.OnModelCreating(builder);
         }

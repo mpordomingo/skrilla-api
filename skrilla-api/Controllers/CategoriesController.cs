@@ -42,7 +42,7 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Category> Post(CategoryRequest request)
         {
-            Category cat = new Category(request.Name, request.Photoid, request.Nonedit);
+            Category cat = new Category(request.Name, request.Nonedit);
 
             context.Add(cat);
             context.SaveChanges();

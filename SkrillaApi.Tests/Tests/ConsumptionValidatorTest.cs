@@ -86,24 +86,7 @@ namespace SkrillaApi.Tests.Tests
             Assert.Contains("La categoria no puede ser nula.", summary.Messages);
         }
 
-        [Fact]
-        public void ValidationFailsDueToEmptyCategory()
-        {
-            
-            request.Title = "Example";
-            request.Amount = 1323.4;
-            request.Category = "";
-            request.Date = new DateTime(2020,04,05);
-
-            ValidationResult result = validator.Validate(request);
-            ValidationSummary summary = new ValidationSummary(result);
-
-            Assert.False(result.IsValid);
-            Assert.Single(result.Errors);
-            Assert.Contains("La categoria no puede estar vacia.", summary.Messages);
-        }
-
-        [Fact]
+       [Fact]
         public void ValidationFailsDueToTitleTooLong()
         {
 

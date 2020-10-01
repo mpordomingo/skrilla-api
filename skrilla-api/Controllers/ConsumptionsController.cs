@@ -34,16 +34,20 @@ namespace skrilla_api.Controllers
         }
 
         [HttpGet]
-        public List<Consumption>Get(int? category)
+        public List<Consumption> Get(string category)
         {
-            if (category.HasValue)
-                return context.Consumptions.ToList().FindAll(delegate (Consumption item)
-                {
-                    return item.Category == category;
-                });
-            else
-                return context.Consumptions.ToList();
+            if (category != null) {
+                List<Consumption> result = new List<Consumption>();
+                result.Add(context
+                    .Consumptions
+                    .Where(s => s.Category.Name == category)
+                    .FirstOrDefault<Consumption>());
 
+                return result;
+            }
+            else {
+                return context.Consumptions.ToList();
+            }
         }
 
         [HttpPost]
@@ -51,14 +55,16 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Consumption> Post(ConsumptionRequest request)
         {
-            
+
             ValidationResult result = validator.Validate(request);
 
             if (result.IsValid)
             {
+                Category category = GetOrCreateCategory(request.Category);
+
                 Consumption consumption = new Consumption(request.Title,
                     request.Amount,
-                    request.Category,
+                    category,
                     1,
                     LocalDate.FromDateTime(request.Date));
 
@@ -71,7 +77,30 @@ namespace skrilla_api.Controllers
             {
                 return BadRequest(new ValidationSummary(result));
             }
-            
+
         }
+
+
+        private Category GetOrCreateCategory(string category)
+        {
+            List<Category> categories = context
+                .Categories
+                .Where(s => s.Name == category)
+                .ToList<Category>();
+
+            Category aCategory;
+            if (categories.Count == 0){
+                aCategory = new Category(category, true);
+                context.Add(aCategory);
+                context.SaveChanges();
+            }
+            else {
+                aCategory = categories.First<Category>();
+             }
+
+            
+            return aCategory;
+        }
+
     }
 }

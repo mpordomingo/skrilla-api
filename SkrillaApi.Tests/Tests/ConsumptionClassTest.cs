@@ -16,6 +16,7 @@ namespace SkrillaApi.Tests
     {
         private  DbConnection _connection;
         private SqliteContext context;
+        private Category category;
 
         protected DbContextOptions<SqliteContext> ContextOptions { get; }
 
@@ -27,6 +28,9 @@ namespace SkrillaApi.Tests
             context = new SqliteContext(ContextOptions);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            category = new Category("Otros", false);
+            context.Add(category);
+            context.SaveChanges();
 
         }
 
@@ -41,7 +45,8 @@ namespace SkrillaApi.Tests
         [Fact]
         public void ConsumptionInstanceCreatedSuccessfully()
         {
-            Consumption aConsumption = new Consumption("Example",50.5, "Otros", 1, new LocalDate(2020,05,21));
+            int a = 1;
+            Consumption aConsumption = new Consumption("Example",50.5, category, 1, new LocalDate(2020,05,21));
             context.Consumptions.Add(aConsumption);
             context.SaveChanges();
 
@@ -55,7 +60,7 @@ namespace SkrillaApi.Tests
         public void ConsumptionInstanceCreationFailsDueToNullTitle()
         {
             Consumption invalidConsumption = new Consumption(null, 10.23,
-                "Otros", 1, new LocalDate(2020, 05, 21));
+                category, 1, new LocalDate(2020, 05, 21));
             Assert.Throws<DbUpdateException>(()=> {
                 context.Add(invalidConsumption);
                 context.SaveChanges();
