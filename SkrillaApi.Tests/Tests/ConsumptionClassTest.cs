@@ -46,7 +46,7 @@ namespace SkrillaApi.Tests
         public void ConsumptionInstanceCreatedSuccessfully()
         {
             int a = 1;
-            Consumption aConsumption = new Consumption("Example",50.5, category, 1, new LocalDate(2020,05,21));
+            Consumption aConsumption = new Consumption("Example",50.5, category,"1-abc", new LocalDate(2020,05,21));
             context.Consumptions.Add(aConsumption);
             context.SaveChanges();
 
@@ -60,7 +60,7 @@ namespace SkrillaApi.Tests
         public void ConsumptionInstanceCreationFailsDueToNullTitle()
         {
             Consumption invalidConsumption = new Consumption(null, 10.23,
-                category, 1, new LocalDate(2020, 05, 21));
+                category, "1-abc", new LocalDate(2020, 05, 21));
             Assert.Throws<DbUpdateException>(()=> {
                 context.Add(invalidConsumption);
                 context.SaveChanges();
@@ -72,7 +72,7 @@ namespace SkrillaApi.Tests
         public void ConsumptionInstanceCreationFailsDueToNullCategory()
         {
             Consumption invalidConsumption = new Consumption("Example",
-                10.23, null, 1, new LocalDate(2020, 05, 21));
+                10.23, null, "1-abc", new LocalDate(2020, 05, 21));
             Assert.Throws<DbUpdateException>(() => {
                 context.Add(invalidConsumption);
                 context.SaveChanges();
