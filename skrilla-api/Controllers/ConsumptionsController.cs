@@ -56,6 +56,7 @@ namespace skrilla_api.Controllers
                 result.Add(context
                     .Consumptions
                     .Where(s => s.Category.Name == category && s.PersonId.Equals(loggedUser))
+                    .Include(c => c.Category)
                     .FirstOrDefault<Consumption>());
 
                 return result;
