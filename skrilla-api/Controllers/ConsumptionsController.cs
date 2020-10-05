@@ -115,7 +115,12 @@ namespace skrilla_api.Controllers
 
             Category aCategory;
             if (categories.Count == 0){
-                aCategory = new Category(category, true);
+
+                aCategory = new Category(
+                    category,
+                    true,
+                    User.FindFirstValue("userId"));
+
                 context.Add(aCategory);
                 context.SaveChanges();
             }

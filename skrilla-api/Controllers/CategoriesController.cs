@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using skrilla_api.Configuration;
@@ -24,6 +26,7 @@ namespace skrilla_api.Controllers
 
         private readonly ILogger<CategoriesController> _logger;
 
+    
         public CategoriesController(ILogger<CategoriesController> logger, MysqlContext context)
         {
             _logger = logger;
@@ -31,18 +34,33 @@ namespace skrilla_api.Controllers
         }
 
         [HttpGet]
-        public List<Category> Get()
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<List<Category>> Get()
         {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
 
-            return context.Categories.ToList();
-
+            return context.Categories
+                   .Where(s => s.PersonId.Equals(loggedUser))
+                   .ToList();
         }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<Category> Post(CategoryRequest request)
         {
-            Category cat = new Category(request.Name, request.Nonedit);
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            Category cat = new Category(request.Name, request.Nonedit, loggedUser);
 
             context.Add(cat);
             context.SaveChanges();

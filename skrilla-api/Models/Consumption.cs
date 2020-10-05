@@ -20,6 +20,7 @@ namespace skrilla_api.Models
         public double Amount { get; set; }
 
         [Required]
+        [JsonIgnore]
         public string PersonId { get; set; }
 
         [Required]

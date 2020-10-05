@@ -28,7 +28,7 @@ namespace SkrillaApi.Tests
             context = new SqliteContext(ContextOptions);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            category = new Category("Otros", false);
+            category = new Category("Otros", false, "exmapleUser");
             context.Add(category);
             context.SaveChanges();
 

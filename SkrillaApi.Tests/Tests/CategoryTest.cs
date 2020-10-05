@@ -12,7 +12,7 @@ namespace SkrillaApi.Tests.Tests
 
         [Fact]
         public void CategoryCreatedSuccessfully(){
-            Category category = new Category("Example", false);
+            Category category = new Category("Example", false, "exampleUser");
 
             Assert.False(category.Nonedit);
             Assert.Equal("Example", category.Name);

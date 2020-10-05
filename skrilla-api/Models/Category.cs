@@ -20,10 +20,14 @@ namespace skrilla_api.Models
         [Required]
         public bool Nonedit { get; set; }
 
-        public Category(string name,  bool nonedit)
+        [Required]
+        public string PersonId { get; set; }
+
+        public Category(string name,  bool nonedit, string personId)
         {
             this.Name = name;
             this.Nonedit = nonedit;
+            this.PersonId = personId;
         }
 
         public Category()
