@@ -16,6 +16,7 @@ using skrilla_api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using IdentityServer4.Services;
+using skrilla_api.Services;
 
 namespace skrilla_api
 {
@@ -65,6 +66,9 @@ namespace skrilla_api
                     ValidateAudience = false
                 };
             });
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<IConsumptionService, ConsumptionService>();
 
 
         }

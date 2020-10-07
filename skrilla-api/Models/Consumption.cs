@@ -10,7 +10,6 @@ namespace skrilla_api.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
         public int Id { get; set; }
 
         [Required]
