@@ -14,14 +14,14 @@ namespace skrilla_api.Services
 {
     public class ConsumptionService : IConsumptionService
     {
-        private readonly MysqlContext dbContext;
+        private readonly SkrillaDbContext dbContext;
 
         private readonly ILogger<ConsumptionService> _logger;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ConsumptionService(ILogger<ConsumptionService> logger,
-            MysqlContext context, IHttpContextAccessor httpContextAccesor)
+            SkrillaDbContext context, IHttpContextAccessor httpContextAccesor)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccesor;
