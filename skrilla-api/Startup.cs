@@ -36,12 +36,12 @@ namespace skrilla_api
                     });
             });
 
-            services.AddDbContext<MysqlContext>(options => options
+            services.AddDbContext<SkrillaDbContext>(options => options
                 .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
 
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<MysqlContext>()
+                .AddEntityFrameworkStores<SkrillaDbContext>()
                 .AddDefaultTokenProviders();
             services.AddControllers();
 

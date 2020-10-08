@@ -7,25 +7,25 @@ using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Data.Sqlite;
-using SkrillaApi.Tests.Configuration;
 using NodaTime;
+using skrilla_api.Configuration;
 
 namespace SkrillaApi.Tests
 {
-    public class ConsumptionClassTest
+    public class ConsumptionTest
     {
         private  DbConnection _connection;
-        private SqliteContext context;
+        private SkrillaDbContext context;
         private Category category;
 
-        protected DbContextOptions<SqliteContext> ContextOptions { get; }
+        protected DbContextOptions<SkrillaDbContext> ContextOptions { get; }
 
-        public ConsumptionClassTest() {
-            ContextOptions = new DbContextOptionsBuilder<SqliteContext>()
+        public ConsumptionTest() {
+            ContextOptions = new DbContextOptionsBuilder<SkrillaDbContext>()
                     .UseSqlite(CreateInMemoryDatabase())
                     .Options;
             _connection = RelationalOptionsExtension.Extract(ContextOptions).Connection;
-            context = new SqliteContext(ContextOptions);
+            context = new SkrillaDbContext(ContextOptions);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             category = new Category("Otros", false, "exmapleUser");

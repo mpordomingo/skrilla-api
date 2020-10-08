@@ -24,7 +24,6 @@ namespace skrilla_api.Controllers
 
         private readonly ILogger<ConsumptionsController> _logger;
 
-
         private readonly IConsumptionService consumptionService;
 
 

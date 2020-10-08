@@ -18,13 +18,13 @@ namespace skrilla_api.Controllers
     public class CategoriesController : ControllerBase
     {
 
-        private readonly MysqlContext context;
+        private readonly SkrillaDbContext context;
      
 
         private readonly ILogger<CategoriesController> _logger;
 
     
-        public CategoriesController(ILogger<CategoriesController> logger, MysqlContext context)
+        public CategoriesController(ILogger<CategoriesController> logger, SkrillaDbContext context)
         {
             _logger = logger;
             this.context = context;
