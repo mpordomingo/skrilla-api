@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using skrilla_api.Configuration;
 using skrilla_api.Models;
+using skrilla_api.Services;
 
 namespace skrilla_api.Controllers
 {
@@ -17,17 +18,15 @@ namespace skrilla_api.Controllers
     [Authorize]
     public class CategoriesController : ControllerBase
     {
-
-        private readonly SkrillaDbContext context;
-     
-
         private readonly ILogger<CategoriesController> _logger;
 
-    
-        public CategoriesController(ILogger<CategoriesController> logger, SkrillaDbContext context)
+        private readonly ICategoriesService categoriesService;
+
+
+        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesService categoriesService)
         {
             _logger = logger;
-            this.context = context;
+            this.categoriesService = categoriesService;
         }
 
         [HttpGet]
@@ -40,9 +39,8 @@ namespace skrilla_api.Controllers
                 return Unauthorized();
             }
 
-            return context.Categories
-                   .Where(s => s.PersonId.Equals(loggedUser))
-                   .ToList();
+            List<Category> categories = categoriesService.GetCategories();
+            return categories;
         }
 
         [HttpPost]
@@ -57,13 +55,29 @@ namespace skrilla_api.Controllers
                 return Unauthorized();
             }
 
-            Category cat = new Category(request.Name, request.Nonedit, loggedUser, request.Icon);
+            try
+            {
+                Category category = categoriesService.CreateCategory(request);
 
-            context.Add(cat);
-            context.SaveChanges();
+                if (category == null)
+                {
+                    return StatusCode(500);
+                }
 
-            return CreatedAtAction(nameof(Get), null, cat);
-           
+                return CreatedAtAction(nameof(Get), null, category);
+            }
+            catch (SkrillaApiException e)
+            {
+                if ("not_found".Equals(e.Code))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+
         }
     }
 }
