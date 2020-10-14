@@ -12,10 +12,12 @@ namespace SkrillaApi.Tests.Tests
 
         [Fact]
         public void CategoryCreatedSuccessfully(){
-            Category category = new Category("Example", false, "exampleUser");
+            Category category = new Category("Example", false, "exampleUser","exampleIcon");
 
             Assert.False(category.Nonedit);
             Assert.Equal("Example", category.Name);
+            Assert.Equal("exampleUser", category.PersonId);
+            Assert.Equal("exampleIcon", category.IconDescriptor);
         }
     }
 }

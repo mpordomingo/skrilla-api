@@ -32,7 +32,7 @@ namespace skrilla_api
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.AllowAnyOrigin().AllowAnyHeader();
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     });
             });
 

@@ -48,7 +48,7 @@ namespace SkrillaApi.Tests.Tests
                 Date = new DateTime(2020, 05, 12)
             };
 
-            category = new Category("ExampleCategory",false, "mockUser");
+            category = new Category("ExampleCategory",false, "mockUser", "exampleIcon");
             dbContext.Add(category);
             dbContext.SaveChanges();
 
@@ -129,7 +129,7 @@ namespace SkrillaApi.Tests.Tests
         }
 
         [Fact]
-        public void GetConsumptionsSucceful()
+        public void GetConsumptionsSuccessful()
         {
 
             SetUpConsumption();
@@ -141,6 +141,21 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.Single<Consumption>(results);
             Assert.Equal(consumption, results.First());
+        }
+
+
+        [Fact]
+        public void GetAConsumptionIsSuccessful()
+        {
+
+            SetUpConsumption();
+            Assert.NotNull(consumption);
+
+            int id = consumption.Id;
+
+            Consumption result = consumptionService.GetConsumption(1);
+
+            Assert.Equal(result, consumption);
         }
 
         private void SetUpConsumption()

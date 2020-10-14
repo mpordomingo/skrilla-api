@@ -19,13 +19,17 @@ namespace skrilla_api.Models
         public bool Nonedit { get; set; }
 
         [Required]
+        public string IconDescriptor { get; set; }
+
+        [Required]
         public string PersonId { get; set; }
 
-        public Category(string name,  bool nonedit, string personId)
+        public Category(string name,  bool nonedit, string personId, string icon)
         {
             this.Name = name;
             this.Nonedit = nonedit;
             this.PersonId = personId;
+            this.IconDescriptor = icon;
         }
 
         public Category()

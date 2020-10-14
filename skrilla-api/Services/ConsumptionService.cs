@@ -28,7 +28,7 @@ namespace skrilla_api.Services
             dbContext = context;
         }
 
-        public bool ModifyConsumption(ConsumptionRequest consumptionRequest, int id)
+        public Consumption ModifyConsumption(ConsumptionRequest consumptionRequest, int id)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
 
@@ -45,7 +45,7 @@ namespace skrilla_api.Services
 
             UpdateValues(consumption, consumptionRequest);
             dbContext.SaveChanges();
-            return true;
+            return consumption;
         }
 
         public bool DeleteConsumption(int id)
@@ -108,6 +108,19 @@ namespace skrilla_api.Services
             }
         }
 
+        public Consumption GetConsumption(int id)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            Consumption result = dbContext
+                   .Consumptions
+                   .Where(s => s.Id == id && s.PersonId.Equals(loggedUser))
+                   .Include(c => c.Category).FirstOrDefault();
+
+            return result;
+            
+        }
+
         private void UpdateValues(Consumption consumption, ConsumptionRequest request)
         {
             consumption.Title = request.Title;
@@ -133,7 +146,8 @@ namespace skrilla_api.Services
                 aCategory = new Category(
                     category,
                     true,
-                    loggedUser);
+                    loggedUser,
+                    "exampleIcon");
 
                 dbContext.Add(aCategory);
                 dbContext.SaveChanges();

@@ -55,7 +55,6 @@ namespace skrilla_api.Controllers
                 return Unauthorized();
             }
 
-
             try
             {
                 Category category = categoriesService.CreateCategory(request);

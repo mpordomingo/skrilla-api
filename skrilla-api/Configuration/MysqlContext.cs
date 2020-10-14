@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using skrilla_api.Models;
@@ -27,11 +27,13 @@ namespace skrilla_api.Configuration
 
             builder.Entity<Category>();
             builder.Entity<Consumption>().HasOne<Category>(s => s.Category);
+            builder.Entity<ConsCategory>();
 
             base.OnModelCreating(builder);
         }
 
         public virtual DbSet<Consumption> Consumptions { get; set;  }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<ConsCategory> ConsCategories { get; set; }
     }
 }

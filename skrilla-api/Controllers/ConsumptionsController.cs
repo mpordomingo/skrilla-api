@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using skrilla_api.Configuration;
 using skrilla_api.Models;
 using skrilla_api.Services;
 using skrilla_api.Validation;
@@ -49,6 +48,28 @@ namespace skrilla_api.Controllers
             return consumptions;
             
         }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<Consumption> Get(int id)
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            Consumption consumption = consumptionService.GetConsumption(id);
+
+            if(consumption == null)
+            {
+                return NotFound();
+            }
+            return consumption;
+
+        }
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -132,7 +153,7 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult ModifyConsumption(int id, ConsumptionRequest request)
+        public ActionResult<Consumption> ModifyConsumption(int id, ConsumptionRequest request)
         {
             string loggedUser = User.FindFirstValue("userId");
 
@@ -148,9 +169,12 @@ namespace skrilla_api.Controllers
                 return BadRequest(new ValidationSummary(result));
             }
 
+            Consumption updatedConsumption = null;
+
             try
             {
-                consumptionService.ModifyConsumption(request, id);
+                updatedConsumption = consumptionService
+                    .ModifyConsumption(request, id);
             }
             catch (SkrillaApiException e)
             {
@@ -164,7 +188,7 @@ namespace skrilla_api.Controllers
                 }
             }
 
-            return Ok();
+            return Ok(updatedConsumption);
         }
 
     }

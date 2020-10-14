@@ -37,6 +37,10 @@ namespace SkrillaApi.Tests.Tests
                 .Setup(service => service.DeleteConsumption(It.IsAny<int>()))
                 .Returns(true);
 
+            consumptionServiceMock
+                .Setup(service => service.GetConsumption(It.IsAny<int>()))
+                .Returns(consumptions.Find(c => "Example1".Equals(c.Title)));
+
             controller = new ConsumptionsController(loggerMock.Object, consumptionServiceMock.Object);
 
             ClaimsPrincipal principal = new ClaimsPrincipal();
@@ -64,6 +68,18 @@ namespace SkrillaApi.Tests.Tests
             Assert.Equal(2, result.Value.Count);
             Assert.True(result.Value.TrueForAll(con => consumptions.Contains(con)));
             
+        }
+
+        [Fact]
+        public void GetConsumptionReturnsAConsumption()
+        {
+            var result = controller.Get(1);
+            Assert.NotNull(result);
+
+            Assert.Equal("Example1", result.Value.Title);
+            Assert.Equal(345.6, result.Value.Amount);
+            Assert.Equal("ExampleCategory", result.Value.Category.Name);
+
         }
 
         [Fact]
@@ -105,8 +121,8 @@ namespace SkrillaApi.Tests.Tests
         {
             List<Consumption> consumptions = new List<Consumption>();
 
-            Category category1 = new Category("ExampleCategory", false, "mockUser");
-            Category category2 = new Category("ExampleCategory2", false, "mockUser");
+            Category category1 = new Category("ExampleCategory", false, "mockUser", "exampleIcon");
+            Category category2 = new Category("ExampleCategory2", false, "mockUser", "exampleIcon");
             Consumption consumption1 = new Consumption("Example1", 345.6, category1,
                 "mockUser", new LocalDate(2020, 04, 14));
             Consumption consumption2 = new Consumption("Example2", 345.6, category2,
