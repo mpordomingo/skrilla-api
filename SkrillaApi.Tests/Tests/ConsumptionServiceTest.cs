@@ -129,7 +129,7 @@ namespace SkrillaApi.Tests.Tests
         }
 
         [Fact]
-        public void GetConsumptionsSucceful()
+        public void GetConsumptionsSuccessful()
         {
 
             SetUpConsumption();
@@ -141,6 +141,21 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.Single<Consumption>(results);
             Assert.Equal(consumption, results.First());
+        }
+
+
+        [Fact]
+        public void GetAConsumptionIsSuccessful()
+        {
+
+            SetUpConsumption();
+            Assert.NotNull(consumption);
+
+            int id = consumption.Id;
+
+            Consumption result = consumptionService.GetConsumption(1);
+
+            Assert.Equal(result, consumption);
         }
 
         private void SetUpConsumption()

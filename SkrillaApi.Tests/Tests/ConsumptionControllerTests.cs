@@ -37,6 +37,10 @@ namespace SkrillaApi.Tests.Tests
                 .Setup(service => service.DeleteConsumption(It.IsAny<int>()))
                 .Returns(true);
 
+            consumptionServiceMock
+                .Setup(service => service.GetConsumption(It.IsAny<int>()))
+                .Returns(consumptions.Find(c => "Example1".Equals(c.Title)));
+
             controller = new ConsumptionsController(loggerMock.Object, consumptionServiceMock.Object);
 
             ClaimsPrincipal principal = new ClaimsPrincipal();
@@ -64,6 +68,18 @@ namespace SkrillaApi.Tests.Tests
             Assert.Equal(2, result.Value.Count);
             Assert.True(result.Value.TrueForAll(con => consumptions.Contains(con)));
             
+        }
+
+        [Fact]
+        public void GetConsumptionReturnsAConsumption()
+        {
+            var result = controller.Get(1);
+            Assert.NotNull(result);
+
+            Assert.Equal("Example1", result.Value.Title);
+            Assert.Equal(345.6, result.Value.Amount);
+            Assert.Equal("ExampleCategory", result.Value.Category.Name);
+
         }
 
         [Fact]
