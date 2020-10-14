@@ -28,7 +28,7 @@ namespace SkrillaApi.Tests
             context = new SkrillaDbContext(ContextOptions);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            category = new Category("Otros", false, "exmapleUser");
+            category = new Category("Otros", false, "exmapleUser", "exampleIcon");
             context.Add(category);
             context.SaveChanges();
 

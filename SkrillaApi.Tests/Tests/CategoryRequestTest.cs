@@ -16,6 +16,8 @@ namespace SkrillaApi.Tests.Tests
             CategoryRequest request = new CategoryRequest();
             request.Name = null;
             request.Nonedit = true;
+            request.Icon = "exampleIcon";
+            Assert.Equal("exampleIcon", request.Icon);
             Assert.True(request.Nonedit);
             Assert.Null(request.Name);
             request.Name = "Example";

@@ -48,7 +48,7 @@ namespace SkrillaApi.Tests.Tests
                 Date = new DateTime(2020, 05, 12)
             };
 
-            category = new Category("ExampleCategory",false, "mockUser");
+            category = new Category("ExampleCategory",false, "mockUser", "exampleIcon");
             dbContext.Add(category);
             dbContext.SaveChanges();
 

@@ -121,8 +121,8 @@ namespace SkrillaApi.Tests.Tests
         {
             List<Consumption> consumptions = new List<Consumption>();
 
-            Category category1 = new Category("ExampleCategory", false, "mockUser");
-            Category category2 = new Category("ExampleCategory2", false, "mockUser");
+            Category category1 = new Category("ExampleCategory", false, "mockUser", "exampleIcon");
+            Category category2 = new Category("ExampleCategory2", false, "mockUser", "exampleIcon");
             Consumption consumption1 = new Consumption("Example1", 345.6, category1,
                 "mockUser", new LocalDate(2020, 04, 14));
             Consumption consumption2 = new Consumption("Example2", 345.6, category2,

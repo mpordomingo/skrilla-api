@@ -57,7 +57,7 @@ namespace skrilla_api.Controllers
                 return Unauthorized();
             }
 
-            Category cat = new Category(request.Name, request.Nonedit, loggedUser);
+            Category cat = new Category(request.Name, request.Nonedit, loggedUser, request.Icon);
 
             context.Add(cat);
             context.SaveChanges();

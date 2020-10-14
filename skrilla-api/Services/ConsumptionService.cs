@@ -146,7 +146,8 @@ namespace skrilla_api.Services
                 aCategory = new Category(
                     category,
                     true,
-                    loggedUser);
+                    loggedUser,
+                    "exampleIcon");
 
                 dbContext.Add(aCategory);
                 dbContext.SaveChanges();
