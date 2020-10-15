@@ -7,6 +7,7 @@ namespace skrilla_api.Models
         public double Amount { get; set; }
         public string Category { get; set; }
         public DateTime Date { get; set; }
+        public string CategoryIcon { get; set; }
 
         public ConsumptionRequest() { }
         

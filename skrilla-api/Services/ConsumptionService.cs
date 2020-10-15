@@ -72,7 +72,7 @@ namespace skrilla_api.Services
         public Consumption CreateConsumption(ConsumptionRequest request)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
-            Category category = GetOrCreateCategory(request.Category);
+            Category category = GetOrCreateCategory(request.Category,request.CategoryIcon);
 
             Consumption consumption = new Consumption(request.Title,
                 request.Amount,
@@ -125,12 +125,12 @@ namespace skrilla_api.Services
         {
             consumption.Title = request.Title;
             consumption.Amount = request.Amount;
-            consumption.Category = GetOrCreateCategory(request.Category);
+            consumption.Category = GetOrCreateCategory(request.Category, request.CategoryIcon);
             consumption.Date =  LocalDate.FromDateTime(request.Date);
 
         }
 
-        private Category GetOrCreateCategory(string category)
+        private Category GetOrCreateCategory(string category, string icon)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
 
@@ -138,6 +138,8 @@ namespace skrilla_api.Services
                 .Categories
                 .Where(s => s.Name == category)
                 .ToList<Category>();
+
+            icon ??= "otros";
 
             Category aCategory;
             if (categories.Count == 0)
@@ -147,7 +149,7 @@ namespace skrilla_api.Services
                     category,
                     true,
                     loggedUser,
-                    "exampleIcon");
+                    icon);
 
                 dbContext.Add(aCategory);
                 dbContext.SaveChanges();
