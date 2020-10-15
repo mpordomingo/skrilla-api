@@ -69,6 +69,26 @@ namespace skrilla_api.Controllers
             return consumption;
 
         }
+        [HttpGet("totalmonth")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<List<ConsumptionMonth>>Get()
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            List<ConsumptionMonth> consumption = consumptionService.GetConsumptionsPerMonth();
+
+            if (consumption == null)
+            {
+                return NotFound();
+            }
+            return consumption;
+
+        }
 
 
         [HttpPost]

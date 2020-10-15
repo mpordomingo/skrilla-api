@@ -120,6 +120,28 @@ namespace skrilla_api.Services
             return result;
             
         }
+        public List<ConsumptionMonth> GetConsumptionsPerMonth()
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+            List<ConsumptionMonth> list = dbContext.Consumptions
+                    .Where(s => s.PersonId.Equals(loggedUser))
+                    .GroupBy(c => c.Date) 
+                    .Select(c => new ConsumptionMonth
+                    (
+                        c.Key.Month,
+                        c.Key.Year,
+                        c.Sum(x => x.Amount)
+                    ))
+                    .ToList();
+            return list.GroupBy(c => new { c.Month, c.Year })
+                    .Select(c => new ConsumptionMonth
+                    (
+                        c.Key.Month,
+                        c.Key.Year,
+                        c.Sum(x => x.Amount)
+                    ))
+                    .ToList();
+        }
 
         private void UpdateValues(Consumption consumption, ConsumptionRequest request)
         {

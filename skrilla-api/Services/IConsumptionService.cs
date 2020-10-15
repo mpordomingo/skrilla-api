@@ -12,6 +12,7 @@ namespace skrilla_api.Services
         public Consumption CreateConsumption(ConsumptionRequest request);
         public Consumption GetConsumption(int id);
         public List<Consumption> GetConsumptions(string category);
+        public List<ConsumptionMonth> GetConsumptionsPerMonth();
 
     }
 }
