@@ -44,7 +44,8 @@ namespace skrilla_api.Services
                 aCategory = new Category(
                     request.Name,
                     true,
-                    loggedUser);
+                    loggedUser,
+                    request.Icon);
 
                 dbContext.Add(aCategory);
                 dbContext.SaveChanges();
@@ -88,7 +89,7 @@ namespace skrilla_api.Services
                    .ToList();
         }
 
-        public bool ModifyCategory(CategoryRequest categoryRequest, int CategoryId)
+        public Category ModifyCategory(CategoryRequest categoryRequest, int CategoryId)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
 
@@ -105,7 +106,7 @@ namespace skrilla_api.Services
 
             UpdateValues(category, categoryRequest);
             dbContext.SaveChanges();
-            return true;
+            return category;
         }
 
         private void UpdateValues(Category category, CategoryRequest request)
