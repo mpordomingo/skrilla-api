@@ -26,12 +26,15 @@ namespace skrilla_api.Controllers
 
         private readonly ICategoriesService categoriesService;
 
+        private readonly IConsumptionService consumptionService;
 
-        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesService categoriesService)
+        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesService categoriesService,
+            IConsumptionService consumptionService)
         {
             _logger = logger;
             validator = new CategoryValidation();
             this.categoriesService = categoriesService;
+            this.consumptionService = consumptionService;
         }
 
         [HttpGet]
@@ -101,6 +104,13 @@ namespace skrilla_api.Controllers
 
             try
             {
+                string categoryName = categoriesService.GetCategoryName(id);
+
+                if (categoryName != null)
+                {
+                    consumptionService.ChangeCategoryIdToCategoryDefaultIdOfConsumptionsWithSameGroupIds(categoryName);
+                }
+
                 categoriesService.DeleteCategory(id);
             }
             catch (SkrillaApiException e)

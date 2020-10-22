@@ -13,6 +13,7 @@ namespace skrilla_api.Services
         public Consumption GetConsumption(int id);
         public List<Consumption> GetConsumptions(string category);
         public List<ConsumptionMonth> GetConsumptionsPerMonth();
+        public void ChangeCategoryIdToCategoryDefaultIdOfConsumptionsWithSameGroupIds(string category);
 
     }
 }

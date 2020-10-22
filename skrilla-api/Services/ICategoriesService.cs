@@ -11,6 +11,7 @@ namespace skrilla_api.Services
         public bool DeleteCategory(int id);
         public Category CreateCategory(CategoryRequest request);
         public List<Category> GetCategories();
+        public string GetCategoryName(int id);
 
     }
 }

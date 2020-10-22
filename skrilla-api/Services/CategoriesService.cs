@@ -89,6 +89,11 @@ namespace skrilla_api.Services
                    .ToList();
         }
 
+        public string GetCategoryName(int id)
+        {
+            return GetCategory(id).Name;
+        }
+
         public Category ModifyCategory(CategoryRequest categoryRequest, int CategoryId)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
@@ -112,6 +117,16 @@ namespace skrilla_api.Services
         private void UpdateValues(Category category, CategoryRequest request)
         {
             category.Name = request.Name;
+        }
+
+        private Category GetCategory(int id)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            return dbContext
+                   .Categories
+                   .Where(s => s.CategoryId == id && s.PersonId.Equals(loggedUser))
+                   .FirstOrDefault();
         }
     }
 }

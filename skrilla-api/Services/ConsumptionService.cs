@@ -48,6 +48,23 @@ namespace skrilla_api.Services
             return consumption;
         }
 
+        public void ChangeCategoryIdToCategoryDefaultIdOfConsumptionsWithSameGroupIds(string category)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            List<Consumption> result = new List<Consumption>();
+            result = dbContext
+                .Consumptions
+                .Where(s => s.Category.Name.Contains(category) && s.PersonId.Equals(loggedUser))
+                .Include(c => c.Category).ToList();
+
+            foreach (Consumption consumption in result)
+            {
+                UpdateToDefaultCategory(consumption);
+            }
+            dbContext.SaveChanges();
+        }
+
         public bool DeleteConsumption(int id)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
@@ -150,6 +167,42 @@ namespace skrilla_api.Services
             consumption.Category = GetOrCreateCategory(request.Category, request.CategoryIcon);
             consumption.Date =  LocalDate.FromDateTime(request.Date);
 
+        }
+
+        private void UpdateToDefaultCategory(Consumption consumption)
+        {
+            consumption.Category = GetOrCreateDefaultCategory();
+        }
+
+        private Category GetOrCreateDefaultCategory()
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            List<Category> categories = dbContext
+                .Categories
+                .Where(s => s.Name == "Otros")
+                .ToList<Category>();
+
+            Category aCategory;
+            if (categories.Count == 0)
+            {
+
+                aCategory = new Category(
+                    "Otros",
+                    true,
+                    loggedUser,
+                    "exampleIcon");
+
+                dbContext.Add(aCategory);
+                dbContext.SaveChanges();
+            }
+            else
+            {
+                aCategory = categories.First<Category>();
+            }
+
+
+            return aCategory;
         }
 
         private Category GetOrCreateCategory(string category, string icon)
