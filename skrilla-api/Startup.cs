@@ -63,6 +63,7 @@ namespace skrilla_api
             services.AddHttpContextAccessor();
             services.AddScoped<IConsumptionService, ConsumptionService>();
             services.AddScoped<ICategoriesService, CategoriesService>();
+            services.AddScoped<IBudgetService, BudgetService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
