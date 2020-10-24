@@ -7,8 +7,6 @@ using skrilla_api.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using NodaTime;
-using Microsoft.EntityFrameworkCore;
 
 namespace skrilla_api.Services
 {

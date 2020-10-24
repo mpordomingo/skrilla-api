@@ -29,5 +29,6 @@
     <Folder Include="Configuration\" />
     <Folder Include="Services\" />
     <Folder Include="Validation\" />
+    <Folder Include="Models\Budget\" />
   </ItemGroup>
 </Project>

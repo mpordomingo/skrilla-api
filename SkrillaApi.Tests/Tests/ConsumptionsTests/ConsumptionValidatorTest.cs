@@ -32,7 +32,6 @@ namespace SkrillaApi.Tests.Tests
 
             Assert.Empty(result.Errors);
             Assert.True(result.IsValid);
-            Assert.Empty(result.Errors);
         }
 
         [Fact]
