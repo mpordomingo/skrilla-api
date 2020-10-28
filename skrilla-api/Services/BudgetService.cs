@@ -91,10 +91,25 @@ namespace skrilla_api.Services
                 .FirstOrDefault();
 
 
-            var totalRes = dbContext.Consumptions
+            var consumptionsSet = dbContext.Consumptions
                 .Where(c => c.PersonId.Equals(loggedUser) &&
                         budget.StartDate.CompareTo(c.Date) < 0 &&
-                        budget.EndDate.CompareTo(c.Date) > 0)
+                        budget.EndDate.CompareTo(c.Date) > 0);
+
+
+            List<BudgetItem> budgetItems = budget.BudgetItems.ToList();
+            List<Category> budgetCategories = budgetItems.Select(c => c.Category).Distinct().ToList();
+
+            List<BudgetCategorySummaryItem> summaryItems = consumptionsSet
+                .Where(c => budgetCategories.Contains(c.Category))
+                .AsEnumerable()
+                .GroupBy(c => c.Category)
+                .Select(g => new BudgetCategorySummaryItem(g.Key.Name,
+                    budgetItems.Where(b => b.Category.Equals(g.Key)).First().BudgetedAmount,
+                    g.Sum(c => c.Amount)))
+                .ToList();
+
+            var totalRes = consumptionsSet
                 .GroupBy(c => c.PersonId)
                 .Select(g =>  new { total = g.Sum(c => c.Amount) })
                 .FirstOrDefault();
@@ -103,7 +118,7 @@ namespace skrilla_api.Services
 
             totalSpent = Math.Round(totalSpent, 2);
 
-            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent);
+            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems);
 
             return summary;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace skrilla_api.Models.Budget
 {
@@ -13,6 +14,7 @@ namespace skrilla_api.Models.Budget
         public int BudgetItemId { get; set; }
 
         [Required]
+        [JsonIgnore]
         public Budget Budget { get; set; }
 
         [Required]

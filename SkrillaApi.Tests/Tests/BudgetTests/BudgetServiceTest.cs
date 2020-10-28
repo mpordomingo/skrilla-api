@@ -25,6 +25,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
         private readonly BudgetRequest budgetRequest;
         private readonly BudgetService budgetService;
         private Category category;
+        private Category category2;
 
         protected DbContextOptions<SkrillaDbContext> ContextOptions { get; }
 
@@ -41,7 +42,10 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             dbContext.Database.EnsureCreated();
 
             category = new Category("ExampleCategory", false, "mockUser", "exampleIcon");
+            category2 = new Category("ExampleCategory2", false, "mockUser", "exampleIcon");
+
             dbContext.Add(category);
+            dbContext.Add(category2);
             dbContext.SaveChanges();
 
             List<BudgetItemRequest> budgetItems = new List<BudgetItemRequest>();
@@ -49,6 +53,12 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             budgetItems.Add(new BudgetItemRequest {
                 category = category.CategoryId,
                 amount = 23.5
+            });
+
+            budgetItems.Add(new BudgetItemRequest
+            {
+                category = category2.CategoryId,
+                amount = 101.5
             });
 
             budgetRequest = new BudgetRequest
@@ -92,23 +102,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             Assert.Equal("One or more categories were not found.", ex.Message);
         }
 
-        [Fact]
-        public void BudgetCreationFailsDueToMissingCategory()
-        {
-
-            Budget budget = budgetService.CreateBudget(budgetRequest);
-
-            Assert.Single(budget.BudgetItems);
-            int id = budget.BudgetId;
-
-            budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
-            Assert.NotNull(budget);
-
-            BudgetItem item = budget.BudgetItems.First();
-
-            Assert.Equal(budgetRequest.Amount, budget.Amount);
-            Assert.Equal(budgetRequest.BudgetItems.First().amount, item.BudgetedAmount);
-        }
+       
 
         [Fact]
         public void GetBudgetIsSuccessful()
@@ -138,7 +132,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
 
             budget = budgetService.GetBudget();
             Consumption consumption_a = new Consumption("ExampleA", 50.5, category, "mockUser", new LocalDate(2020, 03, 21));
-            Consumption consumption_b = new Consumption("ExampleB", 95.3, category, "mockUser", new LocalDate(2019, 10, 21));
+            Consumption consumption_b = new Consumption("ExampleB", 95.3, category2, "mockUser", new LocalDate(2019, 10, 21));
             Consumption consumption_c = new Consumption("ExampleC", 45.6, category, "mockUser", new LocalDate(2016, 05, 21));
 
             dbContext.Add(consumption_a);
@@ -151,6 +145,11 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
 
             Assert.Equal(145.8, summary.TotalSpent);
             Assert.Equal(budget.Amount, summary.Amount);
+            Assert.Equal(2, summary.CategoryItems.Count);
+            Assert.Contains(23.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
+            Assert.Contains(50.5, summary.CategoryItems.Select(c => c.TotalSpent));
+            Assert.Contains(101.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
+            Assert.Contains(95.3, summary.CategoryItems.Select(c => c.TotalSpent));
         }
 
         [Fact]
@@ -168,9 +167,10 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             budget = budgetService.GetBudget();
 
             BudgetSummary summary = budgetService.GetBudgetSummary();
-
+           
             Assert.Equal(0, summary.TotalSpent);
             Assert.Equal(budget.Amount, summary.Amount);
+            
         }
 
         [Fact]
