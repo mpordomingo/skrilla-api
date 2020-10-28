@@ -45,7 +45,6 @@ namespace SkrillaApi.Tests
         [Fact]
         public void ConsumptionInstanceCreatedSuccessfully()
         {
-            int a = 1;
             Consumption aConsumption = new Consumption("Example",50.5, category,"1-abc", new LocalDate(2020,05,21));
             context.Consumptions.Add(aConsumption);
             context.SaveChanges();

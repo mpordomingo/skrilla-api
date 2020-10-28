@@ -17,7 +17,7 @@ namespace skrilla_api.Validation
             When(b => b.StartDate != null && b.EndDate != null, () => {
                 RuleFor(b => b).Must(b =>
                 {
-                    return DateTime.Compare((DateTime)b.EndDate, (DateTime)b.StartDate) > 0;
+                    return DateTime.Compare((DateTime)b.StartDate, (DateTime)b.EndDate) < 0;
                 })
                 .WithMessage("La fecha de comienzo debe ser anterior a la fecha de finalizacion.");
             });

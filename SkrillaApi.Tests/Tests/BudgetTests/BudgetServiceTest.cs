@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NodaTime;
 using skrilla_api.Configuration;
 using skrilla_api.Models;
 using skrilla_api.Models.Budget;
@@ -58,9 +59,9 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
                 BudgetItems = budgetItems
             };
 
-            var loggerMock = new Mock<ILogger<BudgetService>>();
+            var loggerMockBudget = new Mock<ILogger<BudgetService>>();
 
-            budgetService = new BudgetService(loggerMock.Object, 
+            budgetService = new BudgetService(loggerMockBudget.Object, 
                 dbContext,
                 GetMockHttpAccesor());
         }
@@ -125,6 +126,52 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             Assert.Equal(budgetRequest.BudgetItems.First().amount, item.BudgetedAmount);
         }
 
+        [Fact]
+        public void GetBudgetSummaryIsSuccessful()
+        {
+            Budget budget = budgetService.CreateBudget(budgetRequest);
+
+            int id = budget.BudgetId;
+
+            budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
+            Assert.NotNull(budget);
+
+            budget = budgetService.GetBudget();
+            Consumption consumption_a = new Consumption("ExampleA", 50.5, category, "mockUser", new LocalDate(2020, 03, 21));
+            Consumption consumption_b = new Consumption("ExampleB", 95.3, category, "mockUser", new LocalDate(2019, 10, 21));
+            Consumption consumption_c = new Consumption("ExampleC", 45.6, category, "mockUser", new LocalDate(2016, 05, 21));
+
+            dbContext.Add(consumption_a);
+            dbContext.Add(consumption_b);
+            dbContext.Add(consumption_c);
+
+            dbContext.SaveChanges();
+
+            BudgetSummary summary = budgetService.GetBudgetSummary();
+
+            Assert.Equal(145.8, summary.TotalSpent);
+            Assert.Equal(budget.Amount, summary.Amount);
+        }
+
+        [Fact]
+        public void GetBudgetSummaryIsSuccessfulWithNoConsumptions()
+        {
+            dbContext.Database.ExecuteSqlRaw("DELETE FROM consumptions");
+
+            Budget budget = budgetService.CreateBudget(budgetRequest);
+
+            int id = budget.BudgetId;
+
+            budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
+            Assert.NotNull(budget);
+
+            budget = budgetService.GetBudget();
+
+            BudgetSummary summary = budgetService.GetBudgetSummary();
+
+            Assert.Equal(0, summary.TotalSpent);
+            Assert.Equal(budget.Amount, summary.Amount);
+        }
 
         [Fact]
         public void GetBudgetReturnsLastAvailableBudget()

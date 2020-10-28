@@ -21,8 +21,8 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
         [Fact]
         public void BugetRequestValidationPassesSuccessfully()
         {
-            request.StartDate = new DateTime(2019, 05, 06);
-            request.EndDate = new DateTime(2020, 06, 12);
+            request.StartDate = new DateTime(2019, 09, 16);
+            request.EndDate = new DateTime(2020, 05, 20);
             request.Amount = 1232.6;
 
             ValidationResult result = validator.Validate(request);

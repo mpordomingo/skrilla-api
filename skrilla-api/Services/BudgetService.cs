@@ -76,7 +76,36 @@ namespace skrilla_api.Services
                 .FirstOrDefault();
 
             return budget;
+        }
 
+        public BudgetSummary GetBudgetSummary()
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            Budget budget = dbContext.Budgets
+                .Where(b => b.PersonId.Equals(loggedUser))
+                .AsEnumerable()
+                .OrderByDescending(b => b.EndDate.Year)
+                .ThenByDescending(b => b.EndDate.Month)
+                .ThenByDescending(b => b.EndDate.Day)
+                .FirstOrDefault();
+
+
+            var totalRes = dbContext.Consumptions
+                .Where(c => c.PersonId.Equals(loggedUser) &&
+                        budget.StartDate.CompareTo(c.Date) < 0 &&
+                        budget.EndDate.CompareTo(c.Date) > 0)
+                .GroupBy(c => c.PersonId)
+                .Select(g =>  new { total = g.Sum(c => c.Amount) })
+                .FirstOrDefault();
+
+            double totalSpent = (totalRes == null) ? 0 : totalRes.total;
+
+            totalSpent = Math.Round(totalSpent, 2);
+
+            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent);
+
+            return summary;
         }
     }
 }

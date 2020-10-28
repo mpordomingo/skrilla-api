@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using skrilla_api.Models;
 using skrilla_api.Models.Budget;
 using skrilla_api.Services;
 using skrilla_api.Validation;
@@ -35,9 +34,24 @@ namespace skrilla_api.Controllers
             this.budgetService = budgetService;
         }
 
+        [HttpGet("summary")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<BudgetSummary> GetBudgetSummary()
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            BudgetSummary budget = budgetService.GetBudgetSummary();
+            return budget;
+
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<Budget> Get()
+        public ActionResult<Budget> GetBudget()
         {
             string loggedUser = User.FindFirstValue("userId");
             if (loggedUser == null)
@@ -49,13 +63,13 @@ namespace skrilla_api.Controllers
             return budget;
 
         }
-        
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<Consumption> Post(BudgetRequest request)
+        public ActionResult<Budget> Post([FromBody] BudgetRequest request)
         {
             string loggedUser = User.FindFirstValue("userId");
 
@@ -80,7 +94,7 @@ namespace skrilla_api.Controllers
                     return StatusCode(500);
                 }
 
-                return CreatedAtAction(nameof(Get), null, budget);
+                return CreatedAtAction(nameof(Post), null, budget);
             }
             catch (SkrillaApiException e)
             {

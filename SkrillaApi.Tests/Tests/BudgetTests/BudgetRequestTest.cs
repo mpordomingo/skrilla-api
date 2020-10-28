@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using skrilla_api.Models.Budget;
 using Xunit;
 
@@ -34,6 +35,9 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
                 Amount = 123.5,
                 BudgetItems = items
             };
+
+            
+            string jsonString = JsonSerializer.Serialize<BudgetRequest>(request);
 
             Assert.Equal(start, request.StartDate);
             Assert.Equal(end, request.EndDate);
