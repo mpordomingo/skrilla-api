@@ -178,11 +178,7 @@ namespace skrilla_api.Services
                 .Where(i => category.Equals(i.Category))
                 .FirstOrDefault();
 
-            if (request.amount == -1 && item != null)
-            {
-                dbContext.Remove(item);
-                return null;
-            }
+          
 
             if (item != null)
             {
