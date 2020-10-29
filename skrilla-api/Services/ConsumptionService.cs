@@ -180,7 +180,7 @@ namespace skrilla_api.Services
 
             List<Category> categories = dbContext
                 .Categories
-                .Where(s => s.Name == "Otros")
+                .Where(s => s.Name == "Otros" && s.PersonId.Equals(loggedUser))
                 .ToList<Category>();
 
             Category aCategory;
@@ -211,7 +211,7 @@ namespace skrilla_api.Services
 
             List<Category> categories = dbContext
                 .Categories
-                .Where(s => s.Name == category)
+                .Where(s => s.Name == category && s.PersonId.Equals(loggedUser))
                 .ToList<Category>();
 
             icon ??= "otros";
@@ -222,7 +222,7 @@ namespace skrilla_api.Services
 
                 aCategory = new Category(
                     category,
-                    true,
+                    false,
                     loggedUser,
                     icon);
 
