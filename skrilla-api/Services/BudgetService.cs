@@ -85,6 +85,7 @@ namespace skrilla_api.Services
 
             Budget budget = dbContext.Budgets
                 .Where(b => b.PersonId.Equals(loggedUser))
+                .Include(b => b.BudgetItems)
                 .AsEnumerable()
                 .OrderByDescending(b => b.EndDate.Year)
                 .ThenByDescending(b => b.EndDate.Month)
@@ -116,7 +117,7 @@ namespace skrilla_api.Services
                 {
                     var budgetItem = budgetItems.Where(b => b.Category.Equals(g.Key)).FirstOrDefault();
                     double budgetAmount = (budgetItem == null) ? -1 : budgetItem.BudgetedAmount;
-                    return new BudgetCategorySummaryItem(g.Key.Name, budgetAmount, g.Sum(c => c.Amount));
+                    return new BudgetCategorySummaryItem(g.Key, budgetAmount, g.Sum(c => c.Amount));
                 }).FirstOrDefault();
 
                 if (item != null)
@@ -125,7 +126,7 @@ namespace skrilla_api.Services
                 }
                 else
                 {
-                    summaryItems.Add(new BudgetCategorySummaryItem(category.Name, -1, 0));
+                    summaryItems.Add(new BudgetCategorySummaryItem(category, -1, 0));
                 }
             });
 
@@ -142,6 +143,51 @@ namespace skrilla_api.Services
             BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems);
 
             return summary;
+        }
+
+        public BudgetItem ModifyCategoryBudget(BudgetItemRequest request)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            Budget budget = dbContext.Budgets
+                .Where(b => b.PersonId.Equals(loggedUser))
+                .Include(b => b.BudgetItems)
+                .ThenInclude(i => i.Category)
+                .AsEnumerable()
+                .OrderByDescending(b => b.EndDate.Year)
+                .ThenByDescending(b => b.EndDate.Month)
+                .ThenByDescending(b => b.EndDate.Day)
+                .FirstOrDefault();
+
+            if (budget == null)
+            {
+                throw new SkrillaApiException("not_found", "El usuario no tiene un presupuesto aun.");
+            }
+
+            Category category = dbContext.Categories
+                .Where(c => c.PersonId.Equals(loggedUser) && c.CategoryId.Equals(request.category))
+                .FirstOrDefault();
+
+            if (category == null)
+            {
+                throw new SkrillaApiException("not_found", "La categoria indicada no fue encontrada. ");
+            }
+
+            BudgetItem item = budget.BudgetItems
+                .Where(i => category.Equals(i.Category))
+                .FirstOrDefault();
+
+            if (item != null)
+            {
+                item.BudgetedAmount = request.amount;
+                dbContext.SaveChanges();
+                return item;
+            }
+
+            item = new BudgetItem(budget, category, request.amount);
+            dbContext.Add(item);
+            dbContext.SaveChanges();
+            return item;
         }
     }
 }

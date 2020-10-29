@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Text.Json.Serialization;
 
 namespace skrilla_api.Models
 {
@@ -22,6 +22,7 @@ namespace skrilla_api.Models
         public string IconDescriptor { get; set; }
 
         [Required]
+        [JsonIgnore]
         public string PersonId { get; set; }
 
         public Category(string name,  bool nonedit, string personId, string icon)

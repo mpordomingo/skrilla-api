@@ -8,5 +8,6 @@ namespace skrilla_api.Services
         public Budget CreateBudget(BudgetRequest request);
         public Budget GetBudget();
         public BudgetSummary GetBudgetSummary();
+        public BudgetItem ModifyCategoryBudget(BudgetItemRequest request);
     }
 }

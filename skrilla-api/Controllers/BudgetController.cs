@@ -108,5 +108,48 @@ namespace skrilla_api.Controllers
                 }
             }
         }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<BudgetItem> ModifyCategoryBudget(BudgetItemRequest request)
+        {
+            string loggedUser = User.FindFirstValue("userId");
+
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            /*ValidationResult result = validator.Validate(request);
+
+            if (!result.IsValid)
+            {
+                return BadRequest(new ValidationSummary(result));
+            }*/
+            BudgetItem item = null; 
+
+            try
+            {
+                item = budgetService.ModifyCategoryBudget(request);
+            }
+            catch (SkrillaApiException e)
+            {
+                if (e.Code == "404")
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+
+            return Ok(item);
+        }
+
     }
 }
