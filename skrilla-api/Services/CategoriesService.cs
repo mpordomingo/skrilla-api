@@ -32,7 +32,7 @@ namespace skrilla_api.Services
 
             List<Category> categories = dbContext
                 .Categories
-                .Where(s => s.Name == request.Name)
+                .Where(s => s.Name == request.Name && s.PersonId.Equals(loggedUser))
                 .ToList<Category>();
 
             Category aCategory;
@@ -41,7 +41,7 @@ namespace skrilla_api.Services
 
                 aCategory = new Category(
                     request.Name,
-                    true,
+                    false,
                     loggedUser,
                     request.Icon);
 
