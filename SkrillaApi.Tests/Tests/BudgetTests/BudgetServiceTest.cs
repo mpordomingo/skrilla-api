@@ -152,7 +152,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
 
             Assert.Equal(192.4, summary.TotalSpent);
             Assert.Equal(budget.Amount, summary.Amount);
-            Assert.Equal(3, summary.CategoryItems.Count);
+            Assert.Equal(4, summary.CategoryItems.Count);
             Assert.Contains(23.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
             Assert.Contains(50.5, summary.CategoryItems.Select(c => c.TotalSpent));
             Assert.Contains(101.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
