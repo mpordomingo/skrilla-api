@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using skrilla_api.Configuration;
@@ -94,20 +95,22 @@ namespace skrilla_api.Services
             var consumptionsSet = dbContext.Consumptions
                 .Where(c => c.PersonId.Equals(loggedUser) &&
                         budget.StartDate.CompareTo(c.Date) < 0 &&
-                        budget.EndDate.CompareTo(c.Date) > 0);
+                        budget.EndDate.CompareTo(c.Date) > 0)
+                .Include(c => c.Category);
 
 
             List<BudgetItem> budgetItems = budget.BudgetItems.ToList();
             List<Category> budgetCategories = budgetItems.Select(c => c.Category).Distinct().ToList();
 
             List<BudgetCategorySummaryItem> summaryItems = consumptionsSet
-                .Where(c => budgetCategories.Contains(c.Category))
                 .AsEnumerable()
                 .GroupBy(c => c.Category)
-                .Select(g => new BudgetCategorySummaryItem(g.Key.Name,
-                    budgetItems.Where(b => b.Category.Equals(g.Key)).First().BudgetedAmount,
-                    g.Sum(c => c.Amount)))
-                .ToList();
+                .Select(g =>
+                {
+                    var budgetItem = budgetItems.Where(b => b.Category.Equals(g.Key)).FirstOrDefault();
+                    double budgetAmount = (budgetItem == null) ? -1 : budgetItem.BudgetedAmount;
+                    return new BudgetCategorySummaryItem(g.Key.Name, budgetAmount, g.Sum(c => c.Amount));
+                }).ToList();
 
             var totalRes = consumptionsSet
                 .GroupBy(c => c.PersonId)

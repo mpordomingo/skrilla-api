@@ -125,6 +125,11 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
         {
             Budget budget = budgetService.CreateBudget(budgetRequest);
 
+            Category category3 = new Category("ExampleCategory3", false, "mockUser", "exampleIcon");
+            Category category4 = new Category("ExampleCategory4", false, "mockUser", "exampleIcon");
+            dbContext.Add(category3);
+            dbContext.Add(category4);
+
             int id = budget.BudgetId;
 
             budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
@@ -134,22 +139,25 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             Consumption consumption_a = new Consumption("ExampleA", 50.5, category, "mockUser", new LocalDate(2020, 03, 21));
             Consumption consumption_b = new Consumption("ExampleB", 95.3, category2, "mockUser", new LocalDate(2019, 10, 21));
             Consumption consumption_c = new Consumption("ExampleC", 45.6, category, "mockUser", new LocalDate(2016, 05, 21));
+            Consumption consumption_d = new Consumption("ExampleD", 46.6, category3, "mockUser", new LocalDate(2020, 01, 21));
 
             dbContext.Add(consumption_a);
             dbContext.Add(consumption_b);
             dbContext.Add(consumption_c);
+            dbContext.Add(consumption_d);
 
             dbContext.SaveChanges();
 
             BudgetSummary summary = budgetService.GetBudgetSummary();
 
-            Assert.Equal(145.8, summary.TotalSpent);
+            Assert.Equal(192.4, summary.TotalSpent);
             Assert.Equal(budget.Amount, summary.Amount);
-            Assert.Equal(2, summary.CategoryItems.Count);
+            Assert.Equal(3, summary.CategoryItems.Count);
             Assert.Contains(23.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
             Assert.Contains(50.5, summary.CategoryItems.Select(c => c.TotalSpent));
             Assert.Contains(101.5, summary.CategoryItems.Select(c => c.BudgetedAmount));
             Assert.Contains(95.3, summary.CategoryItems.Select(c => c.TotalSpent));
+            Assert.Contains(46.6, summary.CategoryItems.Select(c => c.TotalSpent));
         }
 
         [Fact]
