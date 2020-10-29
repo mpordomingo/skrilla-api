@@ -41,7 +41,7 @@ namespace skrilla_api.Services
 
                 aCategory = new Category(
                     request.Name,
-                    false,
+                    request.Nonedit,
                     loggedUser,
                     request.Icon);
 
