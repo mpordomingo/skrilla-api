@@ -39,26 +39,25 @@ namespace skrilla_api.Services
                 loggedUser);
             dbContext.Add(budget);
 
-            List<int> categoryIds = request.BudgetItems.Select(i => i.category).ToList();
+            //List<int> categoryIds = request.BudgetItems.Select(i => i.category).ToList();
 
             List<Category> categories = dbContext.Categories
-                .Where(c => categoryIds.Contains(c.CategoryId))
+                .Where(s => s.PersonId.Equals(loggedUser))
                 .ToList();
 
-            if(categories == null || categoryIds.Count != categories.Count)
+            if(categories == null)
             {
                 throw new SkrillaApiException("not_found",
                     "One or more categories were not found.");
             }
 
-
-            request.BudgetItems.ForEach(i =>
+            foreach(Category category in categories)
             {
                 BudgetItem item = new BudgetItem(budget,
-                    categories.Find(c => c.CategoryId == i.category),
-                    i.amount);
+                    category,
+                    0);
                 dbContext.Add(item);
-            });
+            }
             
             dbContext.SaveChanges();
 
@@ -92,12 +91,14 @@ namespace skrilla_api.Services
                 .ThenByDescending(b => b.EndDate.Day)
                 .FirstOrDefault();
 
+            if (budget == null)
+                return null;
 
-            var consumptionsSet = dbContext.Consumptions
+            List<Consumption> consumptionsSet = dbContext.Consumptions
                 .Where(c => c.PersonId.Equals(loggedUser) &&
-                        budget.StartDate.CompareTo(c.Date) < 0 &&
-                        budget.EndDate.CompareTo(c.Date) > 0)
-                .Include(c => c.Category);
+                        budget.StartDate.CompareTo(c.Date) <= 0 &&
+                        budget.EndDate.CompareTo(c.Date) >= 0).
+                        Include(c => c.Category).ToList();
 
 
             List<BudgetItem> budgetItems = budget.BudgetItems.ToList();
