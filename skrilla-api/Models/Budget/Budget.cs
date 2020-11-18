@@ -31,6 +31,7 @@ namespace skrilla_api.Models.Budget
 
         public List<BudgetItem> BudgetItems { get; set; }
 
+       
 
         public Budget(LocalDate startDate, LocalDate endDate, double amount, string personId)
         {

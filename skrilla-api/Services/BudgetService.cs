@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -39,7 +40,7 @@ namespace skrilla_api.Services
                 loggedUser);
             dbContext.Add(budget);
 
-            //List<int> categoryIds = request.BudgetItems.Select(i => i.category).ToList();
+            List<int> categoryIds = request.BudgetItems.Select(i => i.category).ToList();
 
             List<Category> categories = dbContext.Categories
                 .Where(s => s.PersonId.Equals(loggedUser))
@@ -51,20 +52,30 @@ namespace skrilla_api.Services
                     "One or more categories were not found.");
             }
 
-            foreach(Category category in categories)
+            categories.ForEach(category =>
             {
                 BudgetItem item = new BudgetItem(budget,
                     category,
                     0);
                 dbContext.Add(item);
-            }
+            });
+
+            request.BudgetItems.ForEach(i =>
+            {
+                BudgetItem item = budget.BudgetItems.Where(bi => i.category.Equals(bi.Category.CategoryId)).FirstOrDefault();
+                if(item != null)
+                {
+                    item.BudgetedAmount = i.amount;
+                }
+
+            });
             
             dbContext.SaveChanges();
 
             return budget;
         }
 
-        public Budget GetBudget()
+        public Budget GetCurrentBudget()
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
             Budget budget = dbContext.Budgets
@@ -74,6 +85,25 @@ namespace skrilla_api.Services
                 .ThenByDescending(b => b.EndDate.Month)
                 .ThenByDescending(b => b.EndDate.Day)
                 .FirstOrDefault();
+
+            return budget;
+        }
+
+        public Budget GetBudgetById(int budgetId)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+            Budget budget = dbContext.Budgets
+                .Where(b => b.PersonId.Equals(loggedUser) && b.BudgetId.Equals(budgetId))
+                .AsEnumerable()
+                .OrderByDescending(b => b.EndDate.Year)
+                .ThenByDescending(b => b.EndDate.Month)
+                .ThenByDescending(b => b.EndDate.Day)
+                .FirstOrDefault();
+
+            if (budget == null)
+            {
+                throw new SkrillaApiException("not_found", "Budget not found.");
+            }
 
             return budget;
         }
@@ -144,6 +174,21 @@ namespace skrilla_api.Services
             BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems);
 
             return summary;
+        }
+
+        public List<Budget> GetBudgetList()
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            List<Budget> budgets = dbContext.Budgets
+                .Where(b => b.PersonId.Equals(loggedUser))
+                .Select(n => new Budget(n.StartDate, n.EndDate, n.Amount, n.PersonId)
+                {
+                    BudgetId = n.BudgetId
+                })
+                .ToList();
+
+            return budgets;
         }
 
         public BudgetItem ModifyCategoryBudget(BudgetItemRequest request)

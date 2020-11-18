@@ -49,9 +49,9 @@ namespace skrilla_api.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<Budget> GetBudget()
+        public ActionResult<List<Budget>> GetBudgetList()
         {
             string loggedUser = User.FindFirstValue("userId");
             if (loggedUser == null)
@@ -59,9 +59,47 @@ namespace skrilla_api.Controllers
                 return Unauthorized();
             }
 
-            Budget budget = budgetService.GetBudget();
+            List<Budget> budgets = budgetService.GetBudgetList();
+            return budgets;
+
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<Budget> GetCurrentBudget()
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            Budget budget = budgetService.GetCurrentBudget();
             return budget;
 
+        }
+
+        [HttpGet("{budgetId:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<Budget> GetBudgetById(int budgetId)
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                Budget budget = budgetService.GetBudgetById(budgetId);
+                return budget;
+
+            }
+            catch (SkrillaApiException e)
+            {
+                return NotFound(e.Message);
+            }
+            
         }
 
 
@@ -130,7 +168,7 @@ namespace skrilla_api.Controllers
             {
                 return BadRequest(new ValidationSummary(result));
             }*/
-            BudgetItem item = null; 
+            BudgetItem item;
 
             try
             {

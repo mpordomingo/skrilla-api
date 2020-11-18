@@ -79,27 +79,13 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
         [Fact]
         public void BudgetIsCreatedSuccessfully()
         {
-            BudgetRequest invalidBudgetRequest = new BudgetRequest
-            {
-                StartDate = new DateTime(2019, 05, 06),
-                EndDate = new DateTime(2020, 04, 17),
-                Amount = 123.5,
-                BudgetItems = new List<BudgetItemRequest>
-                {
-                    new BudgetItemRequest
-                    {
-                        category = 56563,
-                        amount = 569.3
-                    }
-                }
-            };
 
-            SkrillaApiException ex = Assert.Throws<SkrillaApiException>(() =>
-            {
-                Budget budget = budgetService.CreateBudget(invalidBudgetRequest);
-            });
-            Assert.Equal("not_found", ex.Code);
-            Assert.Equal("One or more categories were not found.", ex.Message);
+            budgetService.CreateBudget(budgetRequest);
+
+            Budget budget = budgetService.GetBudget();
+            Assert.NotNull(budget);
+            Assert.Equal(budgetRequest.Amount, budget.Amount);
+          
         }
 
        
