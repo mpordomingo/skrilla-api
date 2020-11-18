@@ -110,10 +110,6 @@ namespace skrilla_api.Services
             Budget budget = dbContext.Budgets
                 .Where(b => b.PersonId.Equals(loggedUser) && b.BudgetId.Equals(budgetId))
                 .Include(b => b.BudgetItems)
-                .AsEnumerable()
-                .OrderByDescending(b => b.EndDate.Year)
-                .ThenByDescending(b => b.EndDate.Month)
-                .ThenByDescending(b => b.EndDate.Day)
                 .FirstOrDefault();
 
             if (budget == null)
@@ -130,6 +126,7 @@ namespace skrilla_api.Services
 
 
             List<BudgetItem> budgetItems = budget.BudgetItems.ToList();
+
             List<Category> categories = dbContext.Categories
                 .Where(c => c.PersonId.Equals(loggedUser))
                 .ToList();
@@ -155,7 +152,13 @@ namespace skrilla_api.Services
                 }
                 else
                 {
-                    summaryItems.Add(new BudgetCategorySummaryItem(category, -1, 0));
+                    var budgetItem = budgetItems.Where(b => b.Category.Equals(category)).FirstOrDefault();
+                    double budgetAmount = -1;
+                    if (budgetItem != null && budgetItem.BudgetedAmount != 0) {
+                        budgetAmount = budgetItem.BudgetedAmount;
+                     }
+
+                    summaryItems.Add(new BudgetCategorySummaryItem(category, budgetAmount, 0));
                 }
             });
 
@@ -264,18 +267,19 @@ namespace skrilla_api.Services
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
 
             Budget budget = dbContext.Budgets
-                .Where(b => b.PersonId.Equals(loggedUser))
+                .Where(b => b.PersonId.Equals(loggedUser) && b.BudgetId.Equals(request.budgetId))
                 .Include(b => b.BudgetItems)
                 .ThenInclude(i => i.Category)
                 .AsEnumerable()
-                .OrderByDescending(b => b.EndDate.Year)
-                .ThenByDescending(b => b.EndDate.Month)
-                .ThenByDescending(b => b.EndDate.Day)
                 .FirstOrDefault();
 
             if (budget == null)
             {
-                throw new SkrillaApiException("not_found", "El usuario no tiene un presupuesto aun.");
+                throw new SkrillaApiException("not_found", "El presupuesto indicado no fue encontrada.");
+            }
+            if (budget.EndDate.CompareTo( LocalDate.FromDateTime(DateTime.Today)) < 0)
+            {
+                throw new SkrillaApiException("invalid_request", "No se puede alterar presupuestos pasados.");
             }
 
             Category category = dbContext.Categories
@@ -290,8 +294,6 @@ namespace skrilla_api.Services
             BudgetItem item = budget.BudgetItems
                 .Where(i => category.Equals(i.Category))
                 .FirstOrDefault();
-
-          
 
             if (item != null)
             {
