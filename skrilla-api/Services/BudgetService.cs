@@ -89,11 +89,13 @@ namespace skrilla_api.Services
             return budget;
         }
 
-        public Budget GetBudgetById(int budgetId)
+        public BudgetSummary GetBudgetSummaryById(int budgetId)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
             Budget budget = dbContext.Budgets
                 .Where(b => b.PersonId.Equals(loggedUser) && b.BudgetId.Equals(budgetId))
+                .Include(b => b.BudgetItems)
                 .AsEnumerable()
                 .OrderByDescending(b => b.EndDate.Year)
                 .ThenByDescending(b => b.EndDate.Month)
@@ -105,7 +107,59 @@ namespace skrilla_api.Services
                 throw new SkrillaApiException("not_found", "Budget not found.");
             }
 
-            return budget;
+
+            List<Consumption> consumptionsSet = dbContext.Consumptions
+                .Where(c => c.PersonId.Equals(loggedUser) &&
+                        budget.StartDate.CompareTo(c.Date) <= 0 &&
+                        budget.EndDate.CompareTo(c.Date) >= 0).
+                        Include(c => c.Category).ToList();
+
+
+            List<BudgetItem> budgetItems = budget.BudgetItems.ToList();
+            List<Category> categories = dbContext.Categories
+                .Where(c => c.PersonId.Equals(loggedUser))
+                .ToList();
+
+            List<BudgetCategorySummaryItem> summaryItems = new List<BudgetCategorySummaryItem>();
+
+            categories.ForEach(category =>
+            {
+                BudgetCategorySummaryItem item = consumptionsSet
+                .Where(c => c.Category.Equals(category))
+                .AsEnumerable()
+                .GroupBy(c => c.Category)
+                .Select(g =>
+                {
+                    var budgetItem = budgetItems.Where(b => b.Category.Equals(g.Key)).FirstOrDefault();
+                    double budgetAmount = (budgetItem == null) ? -1 : budgetItem.BudgetedAmount;
+                    return new BudgetCategorySummaryItem(g.Key, budgetAmount, g.Sum(c => c.Amount));
+                }).FirstOrDefault();
+
+                if (item != null)
+                {
+                    summaryItems.Add(item);
+                }
+                else
+                {
+                    summaryItems.Add(new BudgetCategorySummaryItem(category, -1, 0));
+                }
+            });
+
+            var totalRes = consumptionsSet
+                .GroupBy(c => c.PersonId)
+                .Select(g => new { total = g.Sum(c => c.Amount) })
+                .FirstOrDefault();
+
+            double totalSpent = (totalRes == null) ? 0 : totalRes.total;
+
+            totalSpent = Math.Round(totalSpent, 2);
+            summaryItems = summaryItems.OrderByDescending(i => i.TotalSpent).ToList();
+
+            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems, budget.BudgetId);
+
+            return summary;
+
+            
         }
 
         public BudgetSummary GetBudgetSummary()
@@ -171,7 +225,7 @@ namespace skrilla_api.Services
             totalSpent = Math.Round(totalSpent, 2);
             summaryItems = summaryItems.OrderByDescending(i => i.TotalSpent).ToList();
 
-            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems);
+            BudgetSummary summary = new BudgetSummary(budget.Amount, (double)totalSpent, summaryItems, budget.BudgetId);
 
             return summary;
         }

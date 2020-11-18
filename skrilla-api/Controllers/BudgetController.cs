@@ -79,9 +79,9 @@ namespace skrilla_api.Controllers
 
         }
 
-        [HttpGet("{budgetId:int}")]
+        [HttpGet("summary/{budgetId:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<Budget> GetBudgetById(int budgetId)
+        public ActionResult<BudgetSummary> GetBudgetSummaryById(int budgetId)
         {
             string loggedUser = User.FindFirstValue("userId");
             if (loggedUser == null)
@@ -91,8 +91,8 @@ namespace skrilla_api.Controllers
 
             try
             {
-                Budget budget = budgetService.GetBudgetById(budgetId);
-                return budget;
+                BudgetSummary summary = budgetService.GetBudgetSummaryById(budgetId);
+                return summary;
 
             }
             catch (SkrillaApiException e)
