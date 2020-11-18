@@ -33,6 +33,20 @@ namespace skrilla_api.Services
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
 
+            LocalDate newStartDate = LocalDate.FromDateTime((DateTime)request.StartDate);
+            LocalDate newEndDate = LocalDate.FromDateTime((DateTime)request.EndDate);
+
+
+            List<Budget> foundBudgets = dbContext.Budgets.Where(b =>
+                    (b.StartDate.CompareTo(newStartDate) < 0 && b.EndDate.CompareTo(newStartDate) > 0)||
+                    (b.StartDate.CompareTo(newEndDate) < 0 && b.EndDate.CompareTo(newStartDate) > 0))
+                .ToList();
+
+            if(foundBudgets.Count > 0){
+                   throw new SkrillaApiException("conflict","There is a budget for that time period already");
+             }
+
+
             Budget budget = new Budget(
                 LocalDate.FromDateTime((DateTime)request.StartDate),
                 LocalDate.FromDateTime((DateTime)request.EndDate),

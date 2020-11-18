@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using skrilla_api.Models;
 using skrilla_api.Models.Budget;
 using skrilla_api.Services;
 using skrilla_api.Validation;
@@ -51,7 +52,7 @@ namespace skrilla_api.Controllers
 
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<List<Budget>> GetBudgetList()
+        public ActionResult<object> GetBudgetList()
         {
             string loggedUser = User.FindFirstValue("userId");
             if (loggedUser == null)
@@ -60,6 +61,10 @@ namespace skrilla_api.Controllers
             }
 
             List<Budget> budgets = budgetService.GetBudgetList();
+            if (budgets.Count ==  0)
+            {
+                return new SkrillaGenericResponse("no_content", "No budgets yet");
+            }
             return budgets;
 
         }
@@ -107,7 +112,7 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<Budget> Post([FromBody] BudgetRequest request)
+        public ActionResult<object> Post([FromBody] BudgetRequest request)
         {
             string loggedUser = User.FindFirstValue("userId");
 
@@ -136,9 +141,9 @@ namespace skrilla_api.Controllers
             }
             catch (SkrillaApiException e)
             {
-                if ("not_found".Equals(e.Code))
+                if ("conflict".Equals(e.Code))
                 {
-                    return NotFound();
+                    return new SkrillaGenericResponse(e.Code, e.Message);
                 }
                 else
                 {
