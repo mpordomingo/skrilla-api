@@ -82,7 +82,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
 
             budgetService.CreateBudget(budgetRequest);
 
-            Budget budget = budgetService.GetBudget();
+            Budget budget = budgetService.GetCurrentBudget();
             Assert.NotNull(budget);
             Assert.Equal(budgetRequest.Amount, budget.Amount);
           
@@ -100,7 +100,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
             Assert.NotNull(budget);
 
-            budget = budgetService.GetBudget();
+            budget = budgetService.GetCurrentBudget();
             BudgetItem item = budget.BudgetItems.First();
             Assert.Equal(budgetRequest.Amount, budget.Amount);
             Assert.Equal(budgetRequest.BudgetItems.First().amount, item.BudgetedAmount);
@@ -121,7 +121,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
             Assert.NotNull(budget);
 
-            budget = budgetService.GetBudget();
+            budget = budgetService.GetCurrentBudget();
             Consumption consumption_a = new Consumption("ExampleA", 50.5, category, "mockUser", new LocalDate(2020, 03, 21));
             Consumption consumption_b = new Consumption("ExampleB", 95.3, category2, "mockUser", new LocalDate(2019, 10, 21));
             Consumption consumption_c = new Consumption("ExampleC", 45.6, category, "mockUser", new LocalDate(2016, 05, 21));
@@ -158,7 +158,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             budget = dbContext.Budgets.Where(b => b.BudgetId == id).FirstOrDefault();
             Assert.NotNull(budget);
 
-            budget = budgetService.GetBudget();
+            budget = budgetService.GetCurrentBudget();
 
             BudgetSummary summary = budgetService.GetBudgetSummary();
            
@@ -190,7 +190,7 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
             Assert.NotNull(budget);
             Assert.NotNull(budget2);
 
-            Budget budgetFromService = budgetService.GetBudget();
+            Budget budgetFromService = budgetService.GetCurrentBudget();
             Assert.Equal(budget2, budgetFromService);
         }
 
