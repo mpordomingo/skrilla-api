@@ -7,6 +7,7 @@ namespace skrilla_api.Models.Budget
         public int budgetId { get; set; }
         public int category { get; set; }
         public double amount { get; set; }
+        public bool ForceRequest { get; set; }
 
         public BudgetItemRequest()
         {

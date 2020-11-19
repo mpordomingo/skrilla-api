@@ -295,8 +295,22 @@ namespace skrilla_api.Services
                 .Where(i => category.Equals(i.Category))
                 .FirstOrDefault();
 
+            double totalCategoryBudget = budget.BudgetItems.Sum(b => b.BudgetedAmount)-
+                item.BudgetedAmount + request.amount;
+
+            if (!request.ForceRequest && totalCategoryBudget > budget.Amount)
+            {
+                throw new SkrillaApiException("budget_overflow", "El monto presupuestado total de las categorias no puede superar el moto general del presupuesto. ");
+            }
+
+
             if (item != null)
             {
+                if (request.ForceRequest)
+                {
+                    budget.Amount = totalCategoryBudget;
+                }
+
                 item.BudgetedAmount = request.amount;
                 dbContext.SaveChanges();
                 return item;

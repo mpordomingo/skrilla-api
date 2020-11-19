@@ -174,8 +174,8 @@ namespace SkrillaApi.Tests.Tests.BudgetTests
 
             BudgetRequest budgetRequest2 = new BudgetRequest
             {
-                StartDate = new DateTime(2019, 05, 06),
-                EndDate = new DateTime(2020, 12, 17),
+                StartDate = new DateTime(2034, 05, 06),
+                EndDate = new DateTime(2050, 12, 17),
                 Amount = 123.5,
                 BudgetItems = new List<BudgetItemRequest>()
             };

@@ -187,11 +187,11 @@ namespace skrilla_api.Controllers
                 }
                 else
                 {
-                    return BadRequest(e.Message);
+                    return BadRequest(new SkrillaGenericResponse(e.Code, e.Message));
                 }
             }
 
-            return Ok(item);
+            return Ok(new SkrillaGenericResponse("success", "Item de categoria actualizado exitosamente."));
         }
 
     }
