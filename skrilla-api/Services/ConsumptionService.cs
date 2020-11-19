@@ -125,6 +125,31 @@ namespace skrilla_api.Services
             }
         }
 
+        public List<Consumption> GetConsumptionsPeriod(DateTime initial_date, DateTime end_date)
+        {
+            string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");
+
+            if (initial_date != null && end_date != null)
+            {
+                List<Consumption> result = new List<Consumption>();
+                result = dbContext
+                    .Consumptions
+                    .Where(s => s.Date.CompareTo(LocalDate.FromDateTime(initial_date))>0
+                    && s.Date.CompareTo(LocalDate.FromDateTime(end_date)) < 0
+                    && s.PersonId.Equals(loggedUser))
+                    .Include(c => c.Category).ToList();
+
+                return result;
+            }
+            else
+            {
+                return dbContext.Consumptions
+                    .Where(s => s.PersonId.Equals(loggedUser))
+                    .Include(c => c.Category)
+                    .ToList();
+            }
+        }
+
         public Consumption GetConsumption(int id)
         {
             string loggedUser = _httpContextAccessor.HttpContext.User.FindFirstValue("userId");

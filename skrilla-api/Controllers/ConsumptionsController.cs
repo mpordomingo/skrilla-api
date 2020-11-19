@@ -48,6 +48,20 @@ namespace skrilla_api.Controllers
             return consumptions;
             
         }
+        [HttpGet("date")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<List<Consumption>> Get(DateTime initial_date, DateTime end_date)
+        {
+            string loggedUser = User.FindFirstValue("userId");
+            if (loggedUser == null)
+            {
+                return Unauthorized();
+            }
+
+            List<Consumption> consumptions = consumptionService.GetConsumptionsPeriod(initial_date,end_date);
+            return consumptions;
+
+        }
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

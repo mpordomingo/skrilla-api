@@ -12,6 +12,7 @@ namespace skrilla_api.Services
         public Consumption CreateConsumption(ConsumptionRequest request);
         public Consumption GetConsumption(int id);
         public List<Consumption> GetConsumptions(string category);
+        public List<Consumption> GetConsumptionsPeriod(DateTime initial_date, DateTime end_date);
         public List<ConsumptionMonth> GetConsumptionsPerMonth();
         public void ChangeCategoryIdToCategoryDefaultIdOfConsumptionsWithSameGroupIds(string category);
 
