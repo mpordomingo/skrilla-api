@@ -158,7 +158,7 @@ namespace skrilla_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<BudgetItem> ModifyCategoryBudget(BudgetItemRequest request)
+        public ActionResult<SkrillaGenericResponse> ModifyCategoryBudget(BudgetItemRequest request)
         {
             string loggedUser = User.FindFirstValue("userId");
 
