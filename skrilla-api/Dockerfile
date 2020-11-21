@@ -22,11 +22,11 @@ RUN dotnet --info
 RUN apt-get install ca-certificates
 
 # Copy csproj and restore as distinct layers
-COPY skrilla-api/skrilla-api/*.csproj ./
+COPY skrilla-api/*.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY skrilla-api/skrilla-api/. ./
+COPY skrilla-api/. ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
