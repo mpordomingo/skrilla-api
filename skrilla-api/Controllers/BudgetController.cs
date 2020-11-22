@@ -14,6 +14,7 @@ using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
 {
+    [DisableCors]
     [ApiController]
     [Route("/budget")]
     [Authorize]
@@ -35,6 +36,7 @@ namespace skrilla_api.Controllers
             this.budgetService = budgetService;
         }
 
+        [DisableCors]
         [HttpGet("summary")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<BudgetSummary> GetBudgetSummary()
@@ -50,6 +52,7 @@ namespace skrilla_api.Controllers
 
         }
 
+        [DisableCors]
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<object> GetBudgetList()
@@ -69,6 +72,7 @@ namespace skrilla_api.Controllers
 
         }
 
+        [DisableCors]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<Budget> GetCurrentBudget()
@@ -84,6 +88,7 @@ namespace skrilla_api.Controllers
 
         }
 
+        [DisableCors]
         [HttpGet("summary/{budgetId:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<BudgetSummary> GetBudgetSummaryById(int budgetId)
@@ -107,7 +112,7 @@ namespace skrilla_api.Controllers
             
         }
 
-
+        [DisableCors]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -152,7 +157,7 @@ namespace skrilla_api.Controllers
             }
         }
 
-
+        [DisableCors]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

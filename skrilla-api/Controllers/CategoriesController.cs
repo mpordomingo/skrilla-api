@@ -15,6 +15,7 @@ using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
 {
+    [DisableCors]
     [ApiController]
     [Route("/categories")]
     [Authorize]
@@ -37,6 +38,7 @@ namespace skrilla_api.Controllers
             this.consumptionService = consumptionService;
         }
 
+        [DisableCors]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<List<Category>> Get()
@@ -51,6 +53,7 @@ namespace skrilla_api.Controllers
             return categories;
         }
 
+        [DisableCors]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,6 +91,7 @@ namespace skrilla_api.Controllers
 
         }
 
+        [DisableCors]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -128,6 +132,7 @@ namespace skrilla_api.Controllers
             return Accepted();
         }
 
+        [DisableCors]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -13,6 +13,7 @@ using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
 {
+    [DisableCors]
     [ApiController]
     [Route("/consumptions")]
     [Authorize]
@@ -34,6 +35,7 @@ namespace skrilla_api.Controllers
             this.consumptionService = consumptionService;
         }
 
+        [DisableCors]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<List<Consumption>> Get(string category)
@@ -48,6 +50,8 @@ namespace skrilla_api.Controllers
             return consumptions;
             
         }
+
+        [DisableCors]
         [HttpGet("date")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<List<Consumption>> Get(DateTime initial_date, DateTime end_date)
@@ -63,6 +67,7 @@ namespace skrilla_api.Controllers
 
         }
 
+        [DisableCors]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -83,6 +88,8 @@ namespace skrilla_api.Controllers
             return consumption;
 
         }
+
+        [DisableCors]
         [HttpGet("totalmonth")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -104,7 +111,7 @@ namespace skrilla_api.Controllers
 
         }
 
-
+        [DisableCors]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -149,6 +156,7 @@ namespace skrilla_api.Controllers
             }
         }
 
+        [DisableCors]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -182,6 +190,7 @@ namespace skrilla_api.Controllers
             return Accepted();
         }
 
+        [DisableCors]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
