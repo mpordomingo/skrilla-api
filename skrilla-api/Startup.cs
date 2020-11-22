@@ -29,7 +29,7 @@ namespace skrilla_api
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
+                options.AddPolicy("Policy",
                     builder =>
                     {
                         builder.WithOrigins("https://skrilla-ui.herokuapp.com",
@@ -78,7 +78,7 @@ namespace skrilla_api
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors("Policy");
 
 
             app.UseAuthentication();
