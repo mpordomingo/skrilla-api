@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using skrilla_api.Models;
 
 namespace skrilla_api.Controllers
 {
-
+    [EnableCors("Policy")]
     [ApiController]
     [Route("/conspercat")]
     [Authorize]

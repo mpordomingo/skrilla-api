@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
 {
-
+    [EnableCors("Policy")]
     [ApiController]
     [Route("/consumptions")]
     [Authorize]
