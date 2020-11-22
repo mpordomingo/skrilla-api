@@ -27,14 +27,7 @@ namespace skrilla_api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Policy",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                    });
-            });
+            services.AddCors();
 
             services.AddDbContext<SkrillaDbContext>(options => options
                 .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
@@ -77,7 +70,11 @@ namespace skrilla_api
 
             app.UseRouting();
 
-            app.UseCors("Policy");
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
 
             app.UseAuthentication();
 
