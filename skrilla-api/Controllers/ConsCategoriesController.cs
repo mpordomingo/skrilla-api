@@ -14,7 +14,6 @@ using skrilla_api.Models;
 
 namespace skrilla_api.Controllers
 {
-    [EnableCors("Policy")]
     [ApiController]
     [Route("/conspercat")]
     [Authorize]

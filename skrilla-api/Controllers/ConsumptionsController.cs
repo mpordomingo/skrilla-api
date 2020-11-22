@@ -13,7 +13,6 @@ using skrilla_api.Validation;
 
 namespace skrilla_api.Controllers
 {
-    [EnableCors("Policy")]
     [ApiController]
     [Route("/consumptions")]
     [Authorize]
