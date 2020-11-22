@@ -33,7 +33,7 @@ namespace skrilla_api
                     builder =>
                     {
                         builder.WithOrigins("https://skrilla-ui.herokuapp.com",
-                            "http://skrilla-ui.herokuapp.com").AllowAnyHeader().AllowAnyMethod();
+                            "http://skrilla-ui.herokuapp.com").AllowAnyMethod().AllowAnyHeader();
                     });
             });
 
