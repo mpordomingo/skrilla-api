@@ -32,8 +32,7 @@ namespace skrilla_api
                 options.AddPolicy("Policy",
                     builder =>
                     {
-                        builder.WithOrigins("https://skrilla-ui.herokuapp.com",
-                            "http://skrilla-ui.herokuapp.com").AllowAnyMethod().AllowAnyHeader();
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                     });
             });
 
