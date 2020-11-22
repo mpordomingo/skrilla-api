@@ -74,11 +74,11 @@ namespace skrilla_api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("Policy");
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("Policy");
 
             app.UseAuthentication();
 
