@@ -32,7 +32,8 @@ namespace skrilla_api
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins("https://skrilla-ui.herokuapp.com",
+                            "http://skrilla-ui.herokuapp.com").AllowAnyHeader().AllowAnyMethod();
                     });
             });
 
@@ -52,7 +53,7 @@ namespace skrilla_api
             })
             .AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "https://localhost:6001";
+                options.Authority = "https://skrilla-auth-server.herokuapp.com";
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
