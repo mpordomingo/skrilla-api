@@ -75,9 +75,9 @@ namespace skrilla_api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseCors("Policy");
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
