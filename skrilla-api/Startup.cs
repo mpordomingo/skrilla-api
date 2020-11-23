@@ -32,14 +32,14 @@ namespace skrilla_api
             services.AddDbContext<SkrillaDbContext>(options => options
                 .UseMySQL(Configuration.GetConnectionString("mysqlConnection")));
 
-            services.AddCors(options =>
+            /*services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
-                    builder.AllowAnyOrigin()
+                    builder.SetIsOriginAllowed(_ => true)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
-            });
+            });*/
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<SkrillaDbContext>()
@@ -79,7 +79,8 @@ namespace skrilla_api
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
             app.UseHttpsRedirection();
 
