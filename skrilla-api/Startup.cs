@@ -69,13 +69,15 @@ namespace skrilla_api
 
             app.UseOptions();
 
+            app.UseCors(builder => builder
+                .WithOrigins("https://skrilla-ui.herokuapp.com")
+                .WithMethods("GET", "OPTIONS", "POST", "DELETE", "PUT")
+                .WithHeaders("Origin", "Authorization")
+            );
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors(
-                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
-            );
 
             app.UseAuthentication();
 

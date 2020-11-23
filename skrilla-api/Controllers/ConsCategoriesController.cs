@@ -14,7 +14,6 @@ using skrilla_api.Models;
 
 namespace skrilla_api.Controllers
 {
-    [DisableCors]
     [ApiController]
     [Route("/conspercat")]
     [Authorize]
@@ -33,7 +32,6 @@ namespace skrilla_api.Controllers
             this.context = context;
         }
 
-        [DisableCors]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<List<ConsCategory>> Get(int month, int year)
