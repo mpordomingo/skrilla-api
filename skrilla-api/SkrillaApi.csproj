@@ -34,5 +34,6 @@
     <Folder Include="Models\Budget\" />
     <Folder Include="Models\Category\" />
     <Folder Include="Models\Consumption\" />
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 </Project>

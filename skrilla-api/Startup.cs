@@ -13,6 +13,7 @@ using skrilla_api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using skrilla_api.Services;
+using skrilla_api.Middlewares;
 
 namespace skrilla_api
 {
@@ -65,6 +66,8 @@ namespace skrilla_api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseOptions();
 
             app.UseHttpsRedirection();
 
