@@ -77,15 +77,15 @@ namespace skrilla_api
 
             app.UseRouting();
 
+            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+
             app.UseCors(options => options
                 .SetIsOriginAllowed(x => _ = true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication();
 
             app.UseAuthorization();
 
