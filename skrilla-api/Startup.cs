@@ -35,7 +35,7 @@ namespace skrilla_api
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
-                    builder.SetIsOriginAllowed(_ => true)
+                    builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -82,7 +82,6 @@ namespace skrilla_api
             app.UseCors();
 
             app.UseHttpsRedirection();
-            
 
             app.UseAuthentication();
 
