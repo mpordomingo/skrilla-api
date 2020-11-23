@@ -74,13 +74,15 @@ namespace skrilla_api
                 app.UseDeveloperExceptionPage();
             }
 
+
             app.UseOptions();
+
+            app.UseRouting();
 
             app.UseCors();
 
             app.UseHttpsRedirection();
-
-            app.UseRouting();
+            
 
             app.UseAuthentication();
 
